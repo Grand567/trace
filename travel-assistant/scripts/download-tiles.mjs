@@ -39,7 +39,7 @@ const DEFAULT_BOUNDS = {
 
 const DEFAULT_MIN_ZOOM = 14
 const DEFAULT_MAX_ZOOM = 17
-const REQUEST_DELAY_MS = 400
+const REQUEST_DELAY_MS = 600
 const MAX_RETRIES = 3
 const RETRY_DELAY_MS = 2000
 
@@ -193,7 +193,13 @@ async function main() {
 
   for (let i = 0; i < tiles.length; i++) {
     const { z, x, y } = tiles[i]
-    const status = await downloadTile(z, x, y, options.force)
+    let status
+    try {
+      status = await downloadTile(z, x, y, options.force)
+    } catch (err) {
+      process.stdout.write(`\n  ⚠ skipping z=${z} x=${x} y=${y}: ${err.message}\n`)
+      status = 'failed'
+    }
     results[status]++
     process.stdout.write(
       `\r${i + 1}/${tiles.length} (new: ${results.downloaded}, skip: ${results.skipped}, bad/missing: ${results.missing + results.failed})`,
