@@ -98,29 +98,42 @@ export function getCategoryColor(category: string): string {
   return '#388e3c'                                    // Green default
 }
 
-function createPoiIcon(category: string, isNearby: boolean, isLiked: boolean): L.DivIcon {
-  const color = getCategoryColor(category)
+function createPoiIcon(category: string, isNearby: boolean, isLiked: boolean, isLightweight: boolean = false): L.DivIcon {
+  const color = isLightweight ? '#a89f9a' : getCategoryColor(category)
   const nearbyRing = 'rgba(198, 90, 58, 0.85)'
   const fill = isLiked ? color : '#fffaf6'
   const stroke = isLiked ? '#ffffff' : color
-  const strokeWidth = isLiked ? '1.5' : '2'
+  const strokeWidth = isLiked ? (isLightweight ? '1.2' : '1.5') : (isLightweight ? '1.5' : '2')
+  
+  const width = isLightweight ? 18 : 28
+  const height = isLightweight ? 26 : 41
+  
+  const pathD = isLightweight
+    ? 'M9 0C4.03 0 0 4.03 0 9c0 6.75 9 17 9 17s9-10.25 9-17c0-4.97-4.03-9-9-9z'
+    : 'M14 0C6.27 0 0 6.27 0 14c0 10.5 14 27 14 27s14-16.5 14-27c0-7.73-6.27-14-14-14z'
+
+  const innerCircle = isLightweight
+    ? `<circle cx="9" cy="9" r="3.5" fill="${isLiked ? '#ffffff' : color}" opacity="${isLiked ? '1' : '0.28'}"/>`
+    : `<circle cx="14" cy="14" r="5.5" fill="${isLiked ? '#ffffff' : color}" opacity="${isLiked ? '1' : '0.28'}"/>`
 
   return L.divIcon({
     className: [
       'category-marker-icon',
+      isLightweight ? 'is-lightweight' : '',
       isNearby ? 'is-nearby' : '',
       isLiked ? 'is-liked' : '',
     ].join(' ').trim(),
     html: `
-      <svg width="28" height="41" viewBox="0 0 28 41" style="display: block; overflow: visible;">
-        <path d="M14 0C6.27 0 0 6.27 0 14c0 10.5 14 27 14 27s14-16.5 14-27c0-7.73-6.27-14-14-14z" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" ${isNearby ? `filter="drop-shadow(0 0 8px ${nearbyRing})"` : ''}/>
-        <circle cx="14" cy="14" r="5.5" fill="${isLiked ? '#ffffff' : color}" opacity="${isLiked ? '1' : '0.28'}"/>
-        ${isNearby ? '<circle cx="14" cy="14" r="10.5" fill="none" stroke="#c65a3a" stroke-width="2" opacity="0.95"/>' : ''}
+      <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" style="display: block; overflow: visible;">
+        <path d="${pathD}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" ${isNearby ? `filter="drop-shadow(0 0 8px ${nearbyRing})"` : ''}/>
+        ${innerCircle}
+        ${isNearby && !isLightweight ? '<circle cx="14" cy="14" r="10.5" fill="none" stroke="#c65a3a" stroke-width="2" opacity="0.95"/>' : ''}
+        ${isNearby && isLightweight ? '<circle cx="9" cy="9" r="6.5" fill="none" stroke="#c65a3a" stroke-width="1.5" opacity="0.95"/>' : ''}
       </svg>
     `,
-    iconSize: [28, 41],
-    iconAnchor: [14, 41],
-    popupAnchor: [0, -36],
+    iconSize: [width, height],
+    iconAnchor: [isLightweight ? 9 : 14, height],
+    popupAnchor: [0, isLightweight ? -22 : -36],
   })
 }
 
@@ -129,8 +142,9 @@ function refreshPoiMarkerStyles(): void {
     const category = markerCategoryByPoiId.get(poiId) ?? ''
     const isNearby = nearbyPoiIds.has(poiId)
     const isLiked = isPoiLiked(poiId)
+    const isLightweight = poiId.startsWith('bkt-light-')
 
-    marker.setIcon(createPoiIcon(category, isNearby, isLiked))
+    marker.setIcon(createPoiIcon(category, isNearby, isLiked, isLightweight))
     marker.setZIndexOffset(isNearby ? 1000 : 0)
   }
 }
@@ -150,8 +164,9 @@ function createUserLocationIcon(): L.DivIcon {
 
 export function renderPOIMarkers(map: L.Map, pois: POI[]): void {
   for (const poi of pois) {
+    const isLightweight = poi.id.startsWith('bkt-light-')
     const marker = L.marker([poi.lat, poi.lng], {
-      icon: createPoiIcon(poi.category, nearbyPoiIds.has(poi.id), isPoiLiked(poi.id)),
+      icon: createPoiIcon(poi.category, nearbyPoiIds.has(poi.id), isPoiLiked(poi.id), isLightweight),
     }).addTo(map)
     markersByPoiId.set(poi.id, marker)
     markerCategoryByPoiId.set(poi.id, poi.category)

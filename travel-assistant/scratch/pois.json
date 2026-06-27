@@ -1,0 +1,407 @@
+[
+  {
+    "id": "bkt-31230179",
+    "name": "Jagati",
+    "category": "neighborhood",
+    "lat": 27.666537,
+    "lng": 85.436521,
+    "tags": {
+      "name": "जगति",
+      "name:en": "Jagati",
+      "name:fa": "جگتی",
+      "name:ne": "जगति",
+      "name:ur": "جگتی",
+      "place": "neighbourhood",
+      "public_transport": "stop_position"
+    }
+  },
+  {
+    "id": "bkt-457278653",
+    "name": "Aadarsha",
+    "category": "neighborhood",
+    "lat": 27.666512,
+    "lng": 85.433015,
+    "tags": {
+      "highway": "bus_stop",
+      "name": "Adarsha",
+      "name:en": "Aadarsha",
+      "place": "neighbourhood"
+    }
+  },
+  {
+    "id": "bkt-990795854",
+    "name": "White Gate",
+    "category": "heritage site",
+    "lat": 27.672359,
+    "lng": 85.427328,
+    "tags": {
+      "barrier": "sally_port",
+      "historic": "city_gate",
+      "name": "White Gate"
+    }
+  },
+  {
+    "id": "bkt-1402635123",
+    "name": "Main Chok",
+    "category": "neighborhood",
+    "lat": 27.67176,
+    "lng": 85.441375,
+    "tags": {
+      "junction": "yes",
+      "name": "Main Chok",
+      "place": "neighbourhood"
+    }
+  },
+  {
+    "id": "bkt-1402635270",
+    "name": "Libali",
+    "category": "neighborhood",
+    "lat": 27.670942,
+    "lng": 85.441918,
+    "tags": {
+      "name": "लिवाली",
+      "name:en": "Libali",
+      "name:fa": "لیوالی",
+      "name:ne": "लिवाली",
+      "name:ur": "لوالی",
+      "place": "neighbourhood"
+    }
+  },
+  {
+    "id": "bkt-1942507475",
+    "name": "Lion statue",
+    "category": "heritage site",
+    "lat": 27.672104,
+    "lng": 85.42898,
+    "tags": {
+      "historic": "monument",
+      "name": "Lion statue",
+      "tourism": "attraction",
+      "wheelchair": "no"
+    }
+  },
+  {
+    "id": "bkt-1942529535",
+    "name": "Itachhen",
+    "category": "neighborhood",
+    "lat": 27.672623,
+    "lng": 85.424435,
+    "tags": {
+      "name": "इतछें",
+      "name:en": "Itachhen",
+      "name:fa": "ایتاچِن",
+      "name:ne": "इतछें",
+      "name:ur": "اتچھیں",
+      "place": "neighbourhood"
+    }
+  },
+  {
+    "id": "bkt-1969476948",
+    "name": "Pipal Bot",
+    "category": "neighborhood",
+    "lat": 27.682551,
+    "lng": 85.429776,
+    "tags": {
+      "name": "Pipal Bot",
+      "natural": "tree",
+      "place": "neighbourhood"
+    }
+  },
+  {
+    "id": "bkt-1969476986",
+    "name": "temple",
+    "category": "shrine",
+    "lat": 27.6819,
+    "lng": 85.429868,
+    "tags": {
+      "amenity": "place_of_worship",
+      "name": "temple",
+      "religion": "hindu"
+    }
+  },
+  {
+    "id": "bkt-2060240290",
+    "name": "Statue of Sleeping Narayan",
+    "category": "shrine",
+    "lat": 27.6766,
+    "lng": 85.431298,
+    "tags": {
+      "amenity": "place_of_worship",
+      "historic": "monument",
+      "name": "Statue of Sleeping Narayan",
+      "religion": "hindu",
+      "tourism": "attraction"
+    }
+  },
+  {
+    "id": "bkt-2225240053",
+    "name": "Ghalate",
+    "category": "neighborhood",
+    "lat": 27.663539,
+    "lng": 85.42059,
+    "tags": {
+      "name": "घलाते",
+      "name:en": "Ghalate",
+      "name:fa": "گالاته",
+      "name:ne": "घलाते",
+      "name:ur": "گھلاتے",
+      "place": "suburb"
+    }
+  },
+  {
+    "id": "bkt-2230608562",
+    "name": "Kamal Binayak",
+    "category": "neighborhood",
+    "lat": 27.676771,
+    "lng": 85.438279,
+    "tags": {
+      "name": "कमल विनायक",
+      "name:en": "Kamal Binayak",
+      "name:fa": "کمل‌وینایَک",
+      "name:ne": "कमल विनायक",
+      "name:ur": "کمل ونایک",
+      "place": "neighbourhood"
+    }
+  },
+  {
+    "id": "bkt-2251951542",
+    "name": "Kalighat",
+    "category": "neighborhood",
+    "lat": 27.679499,
+    "lng": 85.427395,
+    "tags": {
+      "name": "Kalighat",
+      "place": "neighbourhood"
+    }
+  },
+  {
+    "id": "bkt-4380964290",
+    "name": "Thathu Bahi",
+    "category": "buddhist shrine",
+    "lat": 27.672844,
+    "lng": 85.422762,
+    "tags": {
+      "addr:street": "Napookhu",
+      "amenity": "place_of_worship",
+      "name": "Thathu Bahi",
+      "name:en": "Thathu Bahi",
+      "religion": "buddhist"
+    }
+  },
+  {
+    "id": "bkt-4605332689",
+    "name": "Subarneshwor",
+    "category": "shrine",
+    "lat": 27.66257,
+    "lng": 85.414307,
+    "tags": {
+      "amenity": "place_of_worship",
+      "name:en": "Subarneshwor"
+    }
+  },
+  {
+    "id": "bkt-5002685857",
+    "name": "Macho Bhairab",
+    "category": "shrine",
+    "lat": 27.671878,
+    "lng": 85.435881,
+    "tags": {
+      "addr:city": "bhaktapur municipality",
+      "addr:place": "jela-8",
+      "amenity": "place_of_worship",
+      "name": "Macho Bhairab",
+      "religion": "hindu"
+    }
+  },
+  {
+    "id": "bkt-6085423487",
+    "name": "Katunje Krishna Pranami Mandir",
+    "category": "shrine",
+    "lat": 27.662672,
+    "lng": 85.415805,
+    "tags": {
+      "amenity": "place_of_worship",
+      "name:en": "Katunje Krishna Pranami Mandir",
+      "name:ne": "कटुन्जे कृष्ण प्रणामी मन्दिर"
+    }
+  },
+  {
+    "id": "bkt-8825621809",
+    "name": "Saraswati Temple",
+    "category": "shrine",
+    "lat": 27.671383,
+    "lng": 85.417472,
+    "tags": {
+      "amenity": "place_of_worship",
+      "building": "yes",
+      "building:levels": "1",
+      "name": "Saraswati Temple",
+      "religion": "hindu"
+    }
+  },
+  {
+    "id": "bkt-9871425646",
+    "name": "Dabu (Dance Platform)",
+    "category": "heritage site",
+    "lat": 27.672117,
+    "lng": 85.427766,
+    "tags": {
+      "historic": "monument",
+      "name": "Dabu (Dance Platform)"
+    }
+  },
+  {
+    "id": "bkt-11160151343",
+    "name": "Inaga Ganesh",
+    "category": "shrine",
+    "lat": 27.671374,
+    "lng": 85.421602,
+    "tags": {
+      "amenity": "place_of_worship",
+      "name": "इनाग गणेश",
+      "name:en": "Inaga Ganesh",
+      "name:ne": "इनाग गणेश",
+      "religion": "hindu"
+    }
+  },
+  {
+    "id": "bkt-11306545969",
+    "name": "sandip khanal",
+    "category": "heritage site",
+    "lat": 27.663709,
+    "lng": 85.415554,
+    "tags": {
+      "historic": "castle",
+      "name": "sandip khanal",
+      "phone": "9851208609"
+    }
+  },
+  {
+    "id": "bkt-11365112169",
+    "name": "Dattatraya Temple",
+    "category": "shrine",
+    "lat": 27.673539,
+    "lng": 85.435359,
+    "tags": {
+      "addr:city": "Bhaktapur",
+      "amenity": "place_of_worship",
+      "name": "Dattatraya Temple",
+      "name:en": "Dattatraya Temple",
+      "religion": "hindu"
+    }
+  },
+  {
+    "id": "bkt-11740432969",
+    "name": "Dipankar Vihar",
+    "category": "buddhist shrine",
+    "lat": 27.675036,
+    "lng": 85.434252,
+    "tags": {
+      "addr:city": "Bhaktapur",
+      "amenity": "place_of_worship",
+      "name": "Dipankar Vihar",
+      "religion": "buddhist"
+    }
+  },
+  {
+    "id": "bkt-11933661414",
+    "name": "Laxmi Narsing Mandir",
+    "category": "heritage site",
+    "lat": 27.670582,
+    "lng": 85.42898,
+    "tags": {
+      "historic": "temple",
+      "name": "Laxmi Narsing Mandir"
+    }
+  },
+  {
+    "id": "bkt-12135432073",
+    "name": "Mahakali Mandir",
+    "category": "shrine",
+    "lat": 27.675908,
+    "lng": 85.431386,
+    "tags": {
+      "amenity": "place_of_worship",
+      "name": "Mahakali Mandir",
+      "religion": "hindu"
+    }
+  },
+  {
+    "id": "bkt-12289433301",
+    "name": "Erotic ElephantsTemple",
+    "category": "shrine",
+    "lat": 27.672486,
+    "lng": 85.426641,
+    "tags": {
+      "amenity": "place_of_worship",
+      "name": "Erotic ElephantsTemple"
+    }
+  },
+  {
+    "id": "bkt-12289463001",
+    "name": "Til Madhav Narayan Temple",
+    "category": "shrine",
+    "lat": 27.670769,
+    "lng": 85.429259,
+    "tags": {
+      "amenity": "place_of_worship",
+      "name": "Til Madhav Narayan Temple"
+    }
+  },
+  {
+    "id": "bkt-12289962101",
+    "name": "Mul chowk",
+    "category": "shrine",
+    "lat": 27.672552,
+    "lng": 85.428244,
+    "tags": {
+      "amenity": "place_of_worship",
+      "name": "Mul chowk"
+    }
+  },
+  {
+    "id": "bkt-12290225001",
+    "name": "Hanuman Ghat / Shiva Linga",
+    "category": "shrine",
+    "lat": 27.669456,
+    "lng": 85.434581,
+    "tags": {
+      "amenity": "place_of_worship",
+      "name": "Hanuman Ghat / Shiva Linga"
+    }
+  },
+  {
+    "id": "bkt-12291759601",
+    "name": "Wakupati Narayan",
+    "category": "shrine",
+    "lat": 27.673482,
+    "lng": 85.437068,
+    "tags": {
+      "amenity": "place_of_worship",
+      "name": "Wakupati Narayan"
+    }
+  },
+  {
+    "id": "bkt-12293366201",
+    "name": "Pashupatinath Temple",
+    "category": "shrine",
+    "lat": 27.671866,
+    "lng": 85.428449,
+    "tags": {
+      "amenity": "place_of_worship",
+      "name": "Pashupatinath Temple"
+    }
+  },
+  {
+    "id": "bkt-12420503356",
+    "name": "Stupa",
+    "category": "buddhist shrine",
+    "lat": 27.672488,
+    "lng": 85.433137,
+    "tags": {
+      "amenity": "place_of_worship",
+      "name": "Stupa",
+      "religion": "buddhist"
+    }
+  }
+]

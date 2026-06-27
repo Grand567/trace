@@ -889,4 +889,21 @@ body:has(#info-card.is-fullscreen) #map-recenter-btn {
   pointer-events: none;
 }
 
+/* ── Lightweight POI details message styling ─────────────────────────────── */
+.poi-no-info {
+  padding: var(--space-4) var(--space-3);
+  text-align: center;
+  color: var(--text-body);
+  font-family: var(--body-font);
+  font-style: italic;
+  opacity: 0.8;
+  font-size: 0.92rem;
+  background: var(--bg-body-dark, #faf6f3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-soft);
+  margin: var(--space-4) 0;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+
 

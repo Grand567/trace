@@ -38,7 +38,7 @@ const OFFLINE_BBOXES = [
   // Kathmandu Durbar Square area
   { north: 27.7065, south: 27.7025, west: 85.3045, east: 85.3095 },
   // Bhaktapur Durbar Square area
-  { north: 27.7730, south: 27.6700, west: 85.4250, east: 85.4310 },
+  { north: 27.6850, south: 27.6580, west: 85.4100, east: 85.4450 },
 ]
 
 let activePois: POI[] = [...katmanduPois]
