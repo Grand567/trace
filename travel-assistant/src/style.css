@@ -93,3 +93,9 @@ body {
   color: #444;
   line-height: 1.45;
 }
+
+.category-marker-icon {
+  background: none !important;
+  border: none !important;
+}
+

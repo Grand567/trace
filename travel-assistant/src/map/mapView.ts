@@ -26,7 +26,9 @@ export function initMap(): L.Map {
   const map = L.map('map', {
     minZoom: OFFLINE_MIN_ZOOM,
     maxZoom: OFFLINE_MAX_ZOOM,
-  }).setView([MAP_CENTER.lat, MAP_CENTER.lng], DEFAULT_ZOOM)
+    tap: false, // Prevents Leaflet's custom tap handler from interfering with native tap/pinch/pan gestures in Capacitor
+    bounceAtZoomLimits: false, // Ensures smoother pinch-zoom and pan on mobile
+  } as any).setView([MAP_CENTER.lat, MAP_CENTER.lng], DEFAULT_ZOOM)
 
   // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   //   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -46,9 +48,31 @@ export function onMarkerTapped(poi: POI): void {
   console.log('POI tapped:', poi)
 }
 
+function getCategoryColor(category: string): string {
+  const cat = category.toLowerCase()
+  if (cat.includes('heritage')) return '#d32f2f'      // Red for heritage
+  if (cat.includes('temple')) return '#f57c00'        // Orange for temples
+  if (cat.includes('palace complex')) return '#7b1fa2' // Purple for palace complex
+  if (cat.includes('palace')) return '#1976d2'        // Blue for palace
+  return '#388e3c'                                    // Green default
+}
+
 export function renderPOIMarkers(map: L.Map, pois: POI[]): void {
   for (const poi of pois) {
-    const marker = L.marker([poi.lat, poi.lng]).addTo(map)
+    const color = getCategoryColor(poi.category)
+    const customIcon = L.divIcon({
+      className: 'category-marker-icon',
+      html: `
+        <svg width="28" height="41" viewBox="0 0 28 41" style="display: block;">
+          <path d="M14 0C6.27 0 0 6.27 0 14c0 10.5 14 27 14 27s14-16.5 14-27c0-7.73-6.27-14-14-14z" fill="${color}" stroke="#ffffff" stroke-width="1.5"/>
+          <circle cx="14" cy="14" r="5.5" fill="#ffffff"/>
+        </svg>
+      `,
+      iconSize: [28, 41],
+      iconAnchor: [14, 41],
+      popupAnchor: [0, -36],
+    })
+    const marker = L.marker([poi.lat, poi.lng], { icon: customIcon }).addTo(map)
     marker.on('click', () => onMarkerTapped(poi))
   }
 }
