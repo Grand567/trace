@@ -33,7 +33,8 @@ body {
   pointer-events: none;
   transition: transform 220ms ease, opacity 220ms ease;
   max-height: min(72vh, 44rem);
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 #info-card.is-open {
@@ -59,6 +60,10 @@ body {
 
 #info-card .poi-content {
   padding-right: 2.25rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 
 #info-card h2 {
@@ -74,8 +79,17 @@ body {
   margin-bottom: 0.75rem;
 }
 
-#info-card .poi-section + .poi-section {
-  margin-top: 0.75rem;
+#info-card h2,
+#info-card .poi-hook,
+#info-card .poi-tabs {
+  flex-shrink: 0;
+}
+
+#info-card .tab-panels {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding-bottom: 0.5rem;
 }
 
 #info-card .poi-tabs {
