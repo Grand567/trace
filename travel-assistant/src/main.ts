@@ -29,6 +29,7 @@ const map = initMap((poi) => {
     const nearbyPois = getNearbyPOIs(lastUserPosition.lat, lastUserPosition.lng, activePois)
     updateNearbyBanner(nearbyPois)
   }
+  updateControlPanelVisibility()
 })
 
 // ── State ────────────────────────────────────────────────────────────────────
@@ -37,7 +38,7 @@ const OFFLINE_BBOXES = [
   // Kathmandu Durbar Square area
   { north: 27.7065, south: 27.7025, west: 85.3045, east: 85.3095 },
   // Bhaktapur Durbar Square area
-  { north: 27.7730, south: 27.6700, west: 85.4280, east: 85.4310 },
+  { north: 27.7730, south: 27.6700, west: 85.4250, east: 85.4310 },
 ]
 
 let activePois: POI[] = [...katmanduPois]
@@ -174,6 +175,14 @@ document.body.appendChild(controlPanel)
 
 const alertsToggle = controlPanel.querySelector('#alerts-toggle') as HTMLInputElement
 
+function updateControlPanelVisibility(): void {
+  if (selectedPoi !== null) {
+    controlPanel.classList.add('is-hidden')
+  } else {
+    controlPanel.classList.remove('is-hidden')
+  }
+}
+
 // ── POI list modal (centered overlay) ────────────────────────────────────────
 const listOverlay = document.createElement('div')
 listOverlay.id = 'poi-list-overlay'
@@ -200,6 +209,30 @@ function hideListModal(): void {
   listOverlay.classList.remove('is-visible')
   listModal.classList.remove('is-visible')
 }
+
+// ── Recenter button ───────────────────────────────────────────────────────────
+const recenterBtn = document.createElement('button')
+recenterBtn.id = 'map-recenter-btn'
+recenterBtn.type = 'button'
+recenterBtn.setAttribute('aria-label', 'Recenter map on current location')
+recenterBtn.innerHTML = `
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7.06-3.6-7.55-7.55H3v-2h2.45c.49-3.95 3.6-7.06 7.55-7.55V3h2v2.45c3.95.49 7.06 3.6 7.55 7.55H21v2h-2.45c-.49 3.95-3.6 7.06-7.55 7.55V21h-2v-1.07zM12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+  </svg>
+`
+document.body.appendChild(recenterBtn)
+
+recenterBtn.addEventListener('click', () => {
+  if (lastUserPosition) {
+    console.log('Recenter: flying to user location:', lastUserPosition)
+    map.flyTo([lastUserPosition.lat, lastUserPosition.lng], 17, {
+      animate: true,
+      duration: 1.2
+    })
+  } else {
+    console.warn('Recenter: no location fix yet')
+  }
+})
 
 function renderPoiList(): void {
   if (proximityAlertsEnabled) return
@@ -251,6 +284,7 @@ function renderPoiList(): void {
       hideListModal()
       renderInfoCard(poi)
       map.flyTo([poi.lat, poi.lng], 17)
+      updateControlPanelVisibility()
     })
   })
 }
@@ -289,6 +323,7 @@ setOnInfoCardClose(() => {
       updateNearbyBanner(nearbyPois)
     }
   }
+  updateControlPanelVisibility()
 })
 
 setOnTakeMeThere(() => {

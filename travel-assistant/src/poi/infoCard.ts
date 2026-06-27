@@ -1,5 +1,23 @@
 import type { POI } from '../shared/types'
 import { isPoiLiked, togglePoiLiked } from './favorites'
+import { speak, stop as stopSpeech } from './tts'
+
+const SPEAKER_SVG = `
+  <svg class="icon-speaker" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+  </svg>
+`
+
+const PAUSE_SVG = `
+  <svg class="icon-pause" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6" y="4" width="4" height="16" fill="currentColor"></rect>
+    <rect x="14" y="4" width="4" height="16" fill="currentColor"></rect>
+  </svg>
+`
+
+let activeTtsTab: string | null = null
+
 
 let activePoiId: string | null = null
 let infoCardCloseCallback: (() => void) | null = null
@@ -45,6 +63,21 @@ export function renderInfoCard(poi: POI): void {
     `
 
     const closeButton = card.querySelector('.poi-close')
+
+    const closeCard = () => {
+      card?.classList.remove('is-open')
+      card?.classList.remove('is-fullscreen')
+      stopSpeech()
+      activeTtsTab = null
+      if (infoCardCloseCallback) {
+        infoCardCloseCallback()
+      }
+    }
+
+    closeButton?.addEventListener('click', () => {
+      closeCard()
+    })
+
     const likeButton = card.querySelector('.poi-like') as HTMLButtonElement | null
     const takeMeThereBtn = card.querySelector('#btn-take-me-there') as HTMLButtonElement | null
     const handle = card.querySelector('.poi-drag-handle')
@@ -72,8 +105,12 @@ export function renderInfoCard(poi: POI): void {
       if (deltaY < -50 && !card?.classList.contains('is-fullscreen')) {
         card?.classList.add('is-fullscreen')
         isDragging = false
-      } else if (deltaY > 50 && card?.classList.contains('is-fullscreen')) {
-        card?.classList.remove('is-fullscreen')
+      } else if (deltaY > 50) {
+        if (card?.classList.contains('is-fullscreen')) {
+          card?.classList.remove('is-fullscreen')
+        } else {
+          closeCard()
+        }
         isDragging = false
       }
     }, { passive: true })
@@ -96,22 +133,18 @@ export function renderInfoCard(poi: POI): void {
       if (deltaY < -50 && !card?.classList.contains('is-fullscreen')) {
         card?.classList.add('is-fullscreen')
         isDragging = false
-      } else if (deltaY > 50 && card?.classList.contains('is-fullscreen')) {
-        card?.classList.remove('is-fullscreen')
+      } else if (deltaY > 50) {
+        if (card?.classList.contains('is-fullscreen')) {
+          card?.classList.remove('is-fullscreen')
+        } else {
+          closeCard()
+        }
         isDragging = false
       }
     })
 
     document.addEventListener('mouseup', () => {
       isDragging = false
-    })
-
-    closeButton?.addEventListener('click', () => {
-      card?.classList.remove('is-open')
-      card?.classList.remove('is-fullscreen')
-      if (infoCardCloseCallback) {
-        infoCardCloseCallback()
-      }
     })
 
     takeMeThereBtn?.addEventListener('click', () => {
@@ -140,6 +173,8 @@ export function renderInfoCard(poi: POI): void {
   if (isSwitchingPoi) {
     card.classList.remove('is-open')
     card.classList.remove('is-fullscreen')
+    stopSpeech()
+    activeTtsTab = null
   }
 
   if (content) {
@@ -152,9 +187,18 @@ export function renderInfoCard(poi: POI): void {
       </div>
 
       <div class="poi-tabs">
-        <button class="tab-button active" data-tab="history">History</button>
-        <button class="tab-button" data-tab="folklore">Folklore</button>
-        <button class="tab-button" data-tab="today">Today</button>
+        <div class="tab-item active" data-tab="history">
+          <button class="tab-button active" data-tab="history">History</button>
+          <button class="tab-tts" data-tab="history" aria-label="Listen to History" title="Listen to History">${SPEAKER_SVG}</button>
+        </div>
+        <div class="tab-item" data-tab="folklore">
+          <button class="tab-button" data-tab="folklore">Folklore</button>
+          <button class="tab-tts" data-tab="folklore" aria-label="Listen to Folklore" title="Listen to Folklore">${SPEAKER_SVG}</button>
+        </div>
+        <div class="tab-item" data-tab="today">
+          <button class="tab-button" data-tab="today">Today</button>
+          <button class="tab-tts" data-tab="today" aria-label="Listen to Today" title="Listen to Today">${SPEAKER_SVG}</button>
+        </div>
       </div>
 
       <div class="tab-panels">
@@ -177,12 +221,84 @@ export function renderInfoCard(poi: POI): void {
       button.addEventListener('click', () => {
         const targetTab = button.getAttribute('data-tab')
 
+        if (activeTtsTab !== null) {
+          stopSpeech()
+          activeTtsTab = null
+        }
+
         tabButtons.forEach(btn => btn.classList.remove('active'))
         tabPanels.forEach(panel => panel.classList.remove('active'))
+        content.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'))
 
         button.classList.add('active')
+        const tabItem = button.closest('.tab-item')
+        tabItem?.classList.add('active')
         const activePanel = content.querySelector(`#tab-${targetTab}`)
         activePanel?.classList.add('active')
+      })
+    })
+
+    const ttsButtons = content.querySelectorAll('.tab-tts')
+    console.log("UI: Found", ttsButtons.length, "TTS buttons in info card content to attach click listeners.");
+    ttsButtons.forEach(ttsBtn => {
+      ttsBtn.addEventListener('click', (e) => {
+        e.stopPropagation()
+        const tabName = ttsBtn.getAttribute('data-tab')
+        console.log("UI: TTS button clicked. tabName:", tabName, "activeTtsTab:", activeTtsTab);
+        if (!tabName) {
+          console.error("UI: Clicked TTS button has no data-tab attribute!");
+          return;
+        }
+
+        if (activeTtsTab === tabName) {
+          console.log("UI: Clicked tab is already active. Stopping speech.");
+          stopSpeech()
+          activeTtsTab = null
+          return
+        }
+
+        const panel = content.querySelector(`#tab-${tabName}`) as HTMLElement | null
+        console.log("UI: Selected panel element:", panel);
+        const textToSpeak = panel?.innerText || panel?.textContent || ''
+        console.log("UI: Extracted text length:", textToSpeak.length, "Snippet:", textToSpeak.substring(0, 60));
+        
+        if (!textToSpeak) {
+          console.warn("UI: Aborting speak call because textToSpeak is empty.");
+          return
+        }
+
+        console.log("UI: Triggering speak() via tts.ts...");
+        speak(
+          textToSpeak,
+          () => {
+            console.log("UI Callback: onStart fired for tab:", tabName);
+            activeTtsTab = tabName
+            ttsButtons.forEach(btn => {
+              const btnTab = btn.getAttribute('data-tab')
+              if (btnTab === tabName) {
+                console.log("UI: Changing button to PAUSE icon for:", btnTab);
+                btn.innerHTML = PAUSE_SVG
+                btn.classList.add('is-speaking')
+                btn.setAttribute('aria-label', `Stop listening to ${btnTab}`)
+              } else {
+                btn.innerHTML = SPEAKER_SVG
+                btn.classList.remove('is-speaking')
+                btn.setAttribute('aria-label', `Listen to ${btnTab}`)
+              }
+            })
+          },
+          () => {
+            console.log("UI Callback: onEnd fired for tab:", tabName);
+            activeTtsTab = null
+            ttsButtons.forEach(btn => {
+              const btnTab = btn.getAttribute('data-tab')
+              console.log("UI: Resetting button to SPEAKER icon for:", btnTab);
+              btn.innerHTML = SPEAKER_SVG
+              btn.classList.remove('is-speaking')
+              btn.setAttribute('aria-label', `Listen to ${btnTab}`)
+            })
+          }
+        )
       })
     })
   }
