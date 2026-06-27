@@ -26,8 +26,39 @@ body {
   z-index: 1000;
   padding: 1rem;
   background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  border-radius: 16px 16px 10px 10px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+  transform: translateY(calc(100% + 1.5rem));
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 220ms ease, opacity 220ms ease;
+  max-height: min(72vh, 44rem);
+  overflow: auto;
+}
+
+#info-card.is-open {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#info-card .poi-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 999px;
+  background: #f1f1f1;
+  color: #222;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+#info-card .poi-content {
+  padding-right: 2.25rem;
 }
 
 #info-card h2 {
