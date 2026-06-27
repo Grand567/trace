@@ -1,6 +1,6 @@
 import 'leaflet/dist/leaflet.css'
 import './style.css'
-import { initMap, renderPOIMarkers, setNearbyPOIs } from './map/mapView'
+import { initMap, renderPOIMarkers, setNearbyPOIs, updateUserLocationMarker, clearUserLocationMarker } from './map/mapView'
 import { pois } from './poi/poiData'
 import { watchUserLocation } from './gps/location'
 import { getNearbyPOIs } from './gps/proximity'
@@ -15,6 +15,7 @@ document.body.appendChild(nearbyBanner)
 
 let stopWatchingLocation: (() => Promise<void>) | null = null
 let isTrackingLocation = false
+let hasCenteredOnUser = false
 
 function updateNearbyBanner(nearbyPois: typeof pois): void {
 	if (nearbyPois.length === 0) {
@@ -38,6 +39,12 @@ async function startLocationTracking(): Promise<void> {
 	isTrackingLocation = true
 	try {
 		stopWatchingLocation = await watchUserLocation((position) => {
+			if (!hasCenteredOnUser) {
+				map.setView([position.lat, position.lng], 17, { animate: false })
+				hasCenteredOnUser = true
+			}
+
+			updateUserLocationMarker(map, position)
 			const nearbyPois = getNearbyPOIs(position.lat, position.lng, pois)
 			setNearbyPOIs(nearbyPois)
 			updateNearbyBanner(nearbyPois)
@@ -60,6 +67,7 @@ async function stopLocationTracking(): Promise<void> {
 		stopWatchingLocation = null
 	}
 
+	clearUserLocationMarker()
 	setNearbyPOIs([])
 	updateNearbyBanner([])
 	isTrackingLocation = false
