@@ -14,6 +14,7 @@ nearbyBanner.id = 'nearby-banner'
 document.body.appendChild(nearbyBanner)
 
 let stopWatchingLocation: (() => Promise<void>) | null = null
+let isTrackingLocation = false
 
 function updateNearbyBanner(nearbyPois: typeof pois): void {
 	if (nearbyPois.length === 0) {
@@ -30,22 +31,56 @@ function updateNearbyBanner(nearbyPois: typeof pois): void {
 }
 
 async function startLocationTracking(): Promise<void> {
-	stopWatchingLocation = await watchUserLocation((position) => {
-		const nearbyPois = getNearbyPOIs(position.lat, position.lng, pois)
-		setNearbyPOIs(nearbyPois)
-		updateNearbyBanner(nearbyPois)
+	if (isTrackingLocation) {
+		return
+	}
 
-		console.log('User location updated:', position)
-		console.log(
-			'Nearby POIs:',
-			nearbyPois.length > 0 ? nearbyPois.map((poi) => poi.name) : 'none',
-		)
-	})
+	isTrackingLocation = true
+	try {
+		stopWatchingLocation = await watchUserLocation((position) => {
+			const nearbyPois = getNearbyPOIs(position.lat, position.lng, pois)
+			setNearbyPOIs(nearbyPois)
+			updateNearbyBanner(nearbyPois)
+
+			console.log('User location updated:', position)
+			console.log(
+				'Nearby POIs:',
+				nearbyPois.length > 0 ? nearbyPois.map((poi) => poi.name) : 'none',
+			)
+		})
+	} catch (error) {
+		isTrackingLocation = false
+		throw error
+	}
+}
+
+async function stopLocationTracking(): Promise<void> {
+	if (stopWatchingLocation) {
+		await stopWatchingLocation()
+		stopWatchingLocation = null
+	}
+
+	setNearbyPOIs([])
+	updateNearbyBanner([])
+	isTrackingLocation = false
 }
 
 void startLocationTracking()
 
+document.addEventListener('visibilitychange', () => {
+	if (document.visibilityState === 'hidden') {
+		void stopLocationTracking()
+		return
+	}
+
+	void startLocationTracking()
+})
+
+window.addEventListener('pagehide', () => {
+	void stopLocationTracking()
+})
+
 window.addEventListener('beforeunload', () => {
-	void stopWatchingLocation?.()
+	void stopLocationTracking()
 })
 
