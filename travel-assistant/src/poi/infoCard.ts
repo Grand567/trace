@@ -32,9 +32,12 @@ export function renderInfoCard(poi: POI): void {
   if (content) {
     content.innerHTML = `
       ${poi.image_url ? `<img class="poi-image" src="${poi.image_url}" alt="${poi.name}" />` : ''}
-      <h2>${poi.name}</h2>
-      <p class="poi-hook">${poi.short_hook}</p>
-      
+      <div class="poi-header">
+        <span class="poi-category">${poi.category}</span>
+        <h2>${poi.name}</h2>
+        <p class="poi-hook">${poi.short_hook}</p>
+      </div>
+
       <div class="poi-tabs">
         <button class="tab-button active" data-tab="history">History</button>
         <button class="tab-button" data-tab="folklore">Folklore</button>
