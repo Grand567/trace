@@ -12,3 +12,21 @@ export const DEV_FAKE_POSITION = {
 export function isFakeGpsEnabled(): boolean {
   return import.meta.env.DEV || import.meta.env.VITE_USE_FAKE_GPS === 'true'
 }
+
+/**
+ * Retrieves the current fake position, allowing runtime override via localStorage.
+ */
+export function getActiveFakePosition() {
+  const override = localStorage.getItem('fakeGpsCoords')
+  if (override) {
+    try {
+      const parsed = JSON.parse(override)
+      if (typeof parsed.lat === 'number' && typeof parsed.lng === 'number') {
+        return parsed
+      }
+    } catch (e) {
+      console.warn('Failed to parse fakeGpsCoords override:', e)
+    }
+  }
+  return DEV_FAKE_POSITION
+}
