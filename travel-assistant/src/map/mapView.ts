@@ -14,6 +14,7 @@ const OFFLINE_MIN_ZOOM = 14
 const OFFLINE_MAX_ZOOM = 17
 
 const markersByPoiId = new Map<string, L.Marker>()
+const markerCategoryByPoiId = new Map<string, string>()
 const nearbyPoiIds = new Set<string>()
 let userLocationMarker: L.Marker | null = null
 
@@ -60,7 +61,7 @@ export function onMarkerTapped(poi: POI): void {
   renderInfoCard(poi)
 }
 
-function getCategoryColor(category: string): string {
+export function getCategoryColor(category: string): string {
   const cat = category.toLowerCase()
   if (cat.includes('heritage')) return '#d32f2f'      // Red for heritage
   if (cat.includes('temple')) return '#f57c00'        // Orange for temples
@@ -95,22 +96,9 @@ function createPoiIcon(category: string, isNearby: boolean, isLiked: boolean): L
   })
 }
 
-function refreshNearbyMarkerStyles(): void {
-  for (const [poiId, marker] of markersByPoiId) {
-    const poi = nearbyPoiIds.has(poiId)
-    const markerPoi = marker.options as L.MarkerOptions & { poiCategory?: string }
-    const category = markerPoi.poiCategory ?? ''
-    const isLiked = isPoiLiked(poiId)
-
-    marker.setIcon(createPoiIcon(category, poi, isLiked))
-    marker.setZIndexOffset(poi ? 1000 : 0)
-  }
-}
-
 function refreshPoiMarkerStyles(): void {
   for (const [poiId, marker] of markersByPoiId) {
-    const markerPoi = marker.options as L.MarkerOptions & { poiCategory?: string }
-    const category = markerPoi.poiCategory ?? ''
+    const category = markerCategoryByPoiId.get(poiId) ?? ''
     const isNearby = nearbyPoiIds.has(poiId)
     const isLiked = isPoiLiked(poiId)
 
@@ -137,8 +125,8 @@ export function renderPOIMarkers(map: L.Map, pois: POI[]): void {
     const marker = L.marker([poi.lat, poi.lng], {
       icon: createPoiIcon(poi.category, nearbyPoiIds.has(poi.id), isPoiLiked(poi.id)),
     }).addTo(map)
-    marker.options.poiCategory = poi.category
     markersByPoiId.set(poi.id, marker)
+    markerCategoryByPoiId.set(poi.id, poi.category)
     marker.on('click', () => onMarkerTapped(poi))
   }
 }
