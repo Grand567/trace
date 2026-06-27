@@ -1,5 +1,7 @@
 import type { POI } from '../shared/types'
 
+let activePoiId: string | null = null
+
 export function renderInfoCard(poi: POI): void {
   let card = document.getElementById('info-card')
 
@@ -21,6 +23,11 @@ export function renderInfoCard(poi: POI): void {
   }
 
   const content = card.querySelector('.poi-content')
+  const isSwitchingPoi = card.classList.contains('is-open') && activePoiId !== null && activePoiId !== poi.id
+
+  if (isSwitchingPoi) {
+    card.classList.remove('is-open')
+  }
 
   if (content) {
     content.innerHTML = `
@@ -41,5 +48,9 @@ export function renderInfoCard(poi: POI): void {
     `
   }
 
-  card.classList.add('is-open')
+  activePoiId = poi.id
+
+  window.setTimeout(() => {
+    card.classList.add('is-open')
+  }, isSwitchingPoi ? 160 : 0)
 }
