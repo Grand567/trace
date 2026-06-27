@@ -5,6 +5,7 @@ export interface POI {
   lat: number
   lng: number
   radius_m: number
+  image_url?: string
   short_hook: string
   history: string
   folklore: string
