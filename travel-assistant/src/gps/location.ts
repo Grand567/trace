@@ -1,5 +1,5 @@
 import { Geolocation } from '@capacitor/geolocation'
-import { DEV_FAKE_POSITION } from './devLocation'
+import { DEV_FAKE_POSITION, isFakeGpsEnabled } from './devLocation'
 
 export interface Position {
   lat: number
@@ -35,6 +35,10 @@ export function getFakePosition(): Position {
 }
 
 export async function getCurrentPosition(): Promise<Position> {
+  if (isFakeGpsEnabled()) {
+    return getFakePosition()
+  }
+
   await ensureLocationPermission()
 
   const { coords } = await Geolocation.getCurrentPosition({
@@ -62,6 +66,19 @@ function toPosition(coords: { latitude: number; longitude: number }): Position {
 export async function watchUserLocation(
   callback: (position: Position | null, error?: any) => void,
 ): Promise<() => Promise<void>> {
+  if (isFakeGpsEnabled()) {
+    console.log('watchUserLocation: Using fake GPS position:', DEV_FAKE_POSITION)
+    // Send immediate update
+    const timeoutId = window.setTimeout(() => callback(getFakePosition(), null), 0)
+    // Send periodic updates to simulate watch changes
+    const intervalId = window.setInterval(() => callback(getFakePosition(), null), 4000)
+
+    return async () => {
+      window.clearTimeout(timeoutId)
+      window.clearInterval(intervalId)
+    }
+  }
+
   await ensureLocationPermission()
 
   const watchId = await Geolocation.watchPosition(

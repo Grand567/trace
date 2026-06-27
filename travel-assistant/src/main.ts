@@ -11,6 +11,7 @@ import {
   clearRouteLine,
   enableOnlineTiles,
   clearPOIMarkers,
+  onMarkerTapped,
 } from './map/mapView'
 import { pois as katmanduPois } from './poi/poiData'
 import { watchUserLocation } from './gps/location'
@@ -23,11 +24,21 @@ import type { POI } from './shared/types'
 // ── Map ──────────────────────────────────────────────────────────────────────
 const map = initMap((poi) => {
   selectedPoi = poi
+  // Refresh banner visibility (will hide because selectedPoi is now non-null)
+  if (lastUserPosition) {
+    const nearbyPois = getNearbyPOIs(lastUserPosition.lat, lastUserPosition.lng, activePois)
+    updateNearbyBanner(nearbyPois)
+  }
 })
 
 // ── State ────────────────────────────────────────────────────────────────────
-const KATHMANDU_CENTER = { lat: 27.7045, lng: 85.3076 }
-const KATHMANDU_RADIUS_M = 2000
+// Bounding boxes matching the two offline tile bundles
+const OFFLINE_BBOXES = [
+  // Kathmandu Durbar Square area
+  { north: 27.7065, south: 27.7025, west: 85.3045, east: 85.3095 },
+  // Bhaktapur Durbar Square area
+  { north: 27.7730, south: 27.6700, west: 85.4280, east: 85.4310 },
+]
 
 let activePois: POI[] = [...katmanduPois]
 let localPoisGenerated = false
@@ -47,13 +58,24 @@ const nearbyBanner = document.createElement('div')
 nearbyBanner.id = 'nearby-banner'
 document.body.appendChild(nearbyBanner)
 
+let currentNearbyPois: POI[] = []
+
+nearbyBanner.addEventListener('click', () => {
+  if (currentNearbyPois.length > 0) {
+    onMarkerTapped(currentNearbyPois[0])
+  }
+})
+
 function updateNearbyBanner(nearbyPois: POI[]): void {
+  currentNearbyPois = nearbyPois
+
   if (lastGpsError) {
     nearbyBanner.innerHTML = `<strong style="color: #ff5252;">GPS Error:</strong> ${lastGpsError}`
     nearbyBanner.classList.add('is-visible')
     return
   }
-  if (!proximityAlertsEnabled || nearbyPois.length === 0) {
+  // Show only when proximityAlertsEnabled is true, we have nearby POIs, and NO info card is open
+  if (!proximityAlertsEnabled || nearbyPois.length === 0 || selectedPoi !== null) {
     nearbyBanner.textContent = ''
     nearbyBanner.classList.remove('is-visible')
     return
@@ -132,8 +154,11 @@ function generateLocalPois(lat: number, lng: number): POI[] {
   }))
 }
 
-function isOutsideKathmandu(lat: number, lng: number): boolean {
-  return haversineDistanceM(lat, lng, KATHMANDU_CENTER.lat, KATHMANDU_CENTER.lng) > KATHMANDU_RADIUS_M
+/** Returns true only if the user is outside ALL offline tile bboxes. */
+function isOutsideOfflineAreas(lat: number, lng: number): boolean {
+  return !OFFLINE_BBOXES.some(
+    (b) => lat >= b.south && lat <= b.north && lng >= b.west && lng <= b.east,
+  )
 }
 
 // ── Control panel (compact top-right toggle only) ─────────────────────────────
@@ -257,6 +282,12 @@ setOnInfoCardClose(() => {
   if (!proximityAlertsEnabled) {
     renderPoiList()
     showListModal()
+  } else {
+    // Refresh banner visibility (will show if we are near a POI and card is closed)
+    if (lastUserPosition) {
+      const nearbyPois = getNearbyPOIs(lastUserPosition.lat, lastUserPosition.lng, activePois)
+      updateNearbyBanner(nearbyPois)
+    }
   }
 })
 
@@ -294,14 +325,14 @@ async function startLocationTracking(): Promise<void> {
         hasCenteredOnUser = true
       }
 
-      // If outside Kathmandu, swap to live tiles + generate local POIs (once)
-      if (isOutsideKathmandu(position.lat, position.lng) && !localPoisGenerated) {
+      // If outside all offline tile areas, swap to live OSM tiles + generate local POIs (once)
+      if (isOutsideOfflineAreas(position.lat, position.lng) && !localPoisGenerated) {
         localPoisGenerated = true
         enableOnlineTiles(map)
         clearPOIMarkers()
         activePois = generateLocalPois(position.lat, position.lng)
         renderPOIMarkers(map, activePois)
-        console.log('Outside Kathmandu — switched to online tiles and generated local POIs')
+        console.log('Outside offline areas — switched to online tiles and generated local POIs')
       }
 
       updateUserLocationMarker(map, position)
