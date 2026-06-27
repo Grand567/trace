@@ -11,6 +11,18 @@ export function renderInfoCard(poi: POI): void {
 
   card.innerHTML = `
     <h2>${poi.name}</h2>
-    <p>${poi.short_hook}</p>
+    <p class="poi-hook">${poi.short_hook}</p>
+    <section class="poi-section">
+      <h3>History</h3>
+      <p>${poi.history}</p>
+    </section>
+    <section class="poi-section">
+      <h3>Folklore</h3>
+      <p>${poi.folklore}</p>
+    </section>
+    <section class="poi-section">
+      <h3>Today</h3>
+      <p>${poi.culture_note}</p>
+    </section>
   `
 }
