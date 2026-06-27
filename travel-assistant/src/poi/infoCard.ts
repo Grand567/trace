@@ -1,7 +1,7 @@
 import type { POI } from '../shared/types'
+import { isPoiLiked, togglePoiLiked } from './favorites'
 
 let activePoiId: string | null = null
-const likedPoiIds = new Set<string>()
 
 function setLikeButtonState(button: HTMLButtonElement | null, isLiked: boolean): void {
   if (!button) {
@@ -40,14 +40,9 @@ export function renderInfoCard(poi: POI): void {
         return
       }
 
-      if (likedPoiIds.has(activePoiId)) {
-        likedPoiIds.delete(activePoiId)
-      } else {
-        likedPoiIds.add(activePoiId)
-      }
-
-      setLikeButtonState(likeButton, likedPoiIds.has(activePoiId))
-      card?.classList.toggle('is-liked', likedPoiIds.has(activePoiId))
+      const isLiked = togglePoiLiked(activePoiId)
+      setLikeButtonState(likeButton, isLiked)
+      card?.classList.toggle('is-liked', isLiked)
     })
 
     document.body.appendChild(card)
@@ -107,8 +102,9 @@ export function renderInfoCard(poi: POI): void {
   }
 
   activePoiId = poi.id
-  setLikeButtonState(likeButton, likedPoiIds.has(poi.id))
-  card.classList.toggle('is-liked', likedPoiIds.has(poi.id))
+  const isLiked = isPoiLiked(poi.id)
+  setLikeButtonState(likeButton, isLiked)
+  card.classList.toggle('is-liked', isLiked)
 
   window.setTimeout(() => {
     card.classList.add('is-open')
