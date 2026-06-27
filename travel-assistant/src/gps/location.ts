@@ -1,4 +1,5 @@
 import { Geolocation } from '@capacitor/geolocation'
+import { DEV_FAKE_POSITION, isFakeGpsEnabled } from './devLocation'
 
 export interface Position {
   lat: number
@@ -27,6 +28,10 @@ export async function ensureLocationPermission(): Promise<void> {
 }
 
 export async function getCurrentPosition(): Promise<Position> {
+  if (isFakeGpsEnabled()) {
+    return { ...DEV_FAKE_POSITION }
+  }
+
   await ensureLocationPermission()
 
   const { coords } = await Geolocation.getCurrentPosition({
@@ -54,6 +59,11 @@ function toPosition(coords: { latitude: number; longitude: number }): Position {
 export async function watchUserLocation(
   callback: (position: Position) => void,
 ): Promise<() => Promise<void>> {
+  if (isFakeGpsEnabled()) {
+    callback({ ...DEV_FAKE_POSITION })
+    return async () => {}
+  }
+
   await ensureLocationPermission()
 
   const watchId = await Geolocation.watchPosition(
