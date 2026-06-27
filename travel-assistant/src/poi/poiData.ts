@@ -105,4 +105,82 @@ export const pois: POI[] = [
     folklore: 'Court stories and palace legends often frame the courtyard as a threshold space where power, ritual, and public spectacle intersected.',
     culture_note: 'Today it helps visitors understand the palace as a living compound rather than a single building, making it one of the most important interpretive spaces in Durbar Square.',
   },
+  {
+    id: 'bhaktapur-nyatapola',
+    name: 'Nyatapola Temple',
+    category: 'temple',
+    lat: 27.67139, // Approximate coordinates
+    lng: 85.42861, // Approximate coordinates
+    radius_m: 45,
+    image_url: 'https://upload.wikimedia.org/wikipedia/commons/d/da/Nyatapola.jpg',
+    short_hook: 'The five-story monument that dominates Bhaktapur and stands as Nepal’s tallest temple.',
+    history: 'Commissioned by King Bhupatindra Malla and completed between December 1701 and July 1702, the Nyatapola Temple stands at over 30 meters tall, making it the tallest temple in Nepal. Built with five tiers of sloping roofs using local timber and terracotta tiles, it is considered a masterpiece of Newar architecture. The king himself is said to have carried the first bricks to inspire his subjects, leading to its rapid completion in just 88 days of intense collective labor.\n\nThe structure is renowned for its remarkable seismic design. The heavy timber joints, wide-reaching eaves, and low center of gravity have enabled the pagoda to survive multiple devastating earthquakes, including the catastrophic events of 1934 and 2015, with almost no structural damage. Its engineering continues to be studied as a pinnacle of ancient Nepalese construction techniques.',
+    folklore: 'According to local lore, the god Bhairav, housed in a temple nearby, grew angry and began causing destruction throughout Bhaktapur. To appease his wrath and balance his energy, King Bhupatindra Malla sought counsel from Tantric priests, who advised him to invoke the secret goddess Siddhi Lakshmi (a powerful, esoteric form of Durga). The king built this five-story sanctuary directly in front of Bhairav\'s temple to symbolically check and pacify his wild energy.\n\nThe temple\'s grand stone staircase features pairs of legendary guardians flanking the steps, each level ten times stronger than the one below it. At the bottom are the legendary Newar strongmen Jaya Malla and Phatta Malla. Above them are two massive elephants, followed by two fierce lions, then two winged griffins (shardulas), and finally the tigress and lioness deities Singhini and Baghini. Inside the locked temple sits Siddhi Lakshmi herself, ten times more powerful than all the guardians combined, maintaining cosmic order and keeping Bhairav\'s rage at bay.',
+    culture_note: 'Only authorized Newar priests are permitted to enter the inner sanctum of the temple, keeping the statue of Siddhi Lakshmi strictly hidden from public view. During the annual Bisket Jatra festival, the square becomes the main stage for chariot pulling and traditional music, cementing Nyatapola as the spiritual and cultural heart of Bhaktapur.',
+  },
+  {
+    id: 'bhaktapur-bhairavnath-temple',
+    name: 'Bhairavnath Temple',
+    category: 'temple',
+    lat: 27.6711, // Approximate coordinates
+    lng: 85.4295, // Approximate coordinates
+    radius_m: 40,
+    image_url: 'https://upload.wikimedia.org/wikipedia/commons/e/e3/1_Bhairavnath_Temple%2C_Bhaktapur_Durbar_Square%2C_NEPAL_01.jpg',
+    short_hook: 'A massive three-story temple dedicated to the fierce deity Bhairav, the protector of Bhaktapur.',
+    history: 'Located in Taumadhi Square right next to Nyatapola, the Bhairavnath Temple is dedicated to Bhairav, a fierce and wrathful manifestation of Shiva. The temple was originally constructed as a modest single-story building under the reign of King Jagat Jyoti Malla in the early 17th century. Recognising the deity\'s vital role in state protection, King Bhupatindra Malla later commissioned a grand expansion in 1717 CE, adding two additional storeys to complete the impressive three-story pagoda seen today.\n\nThe temple was severely damaged during the devastating 1934 earthquake, which collapsed much of the structure. However, it was meticulously rebuilt by local craftsmen who preserved the original layout and salvaged much of the ancient, intricately carved woodwork. The building features unique rectangular layouts and gilded brass roofs decorated with small bells and protective metal banners.',
+    folklore: 'Local legend tells that Bhairav once visited Bhaktapur disguised as a normal human to enjoy the city\'s spectacular festivals. Recognising the god, the local Tantric priests cast a binding spell to keep him in the city forever to protect it. To escape the trap, the deity began sinking into the earth, but the priests acted quickly and decapitated him. Because of this, the temple shrine holds only a small gilded bust of Bhairav\'s head, and it is believed his divine presence remains bound to the city.\n\nDogs are considered the sacred vehicle (vahana) of Bhairav. Devotees regularly feed local dogs and birds around the temple square as an act of worship to appease the god. The ringing of the temple\'s heavy bronze bells is traditionally believed to drive away malevolent spirits and shield the neighborhood from dark forces.',
+    culture_note: 'The Bhairavnath Temple plays a central role during the Bisket Jatra festival, where the deity\'s massive wooden chariot is assembled and pulled by hundreds of devotees. This event marks the Nepalese New Year and involves a dramatic, high-energy tug-of-war between residents of the upper and lower sections of Bhaktapur.',
+  },
+  {
+    id: 'bhaktapur-vatsala-devi-temple',
+    name: 'Vatsala Devi Temple',
+    category: 'temple',
+    lat: 27.6718, // Approximate coordinates
+    lng: 85.4284, // Approximate coordinates
+    radius_m: 35,
+    image_url: 'https://upload.wikimedia.org/wikipedia/commons/4/47/Vatsala_Temple_at_Bhaktapur_Durbar_Square_1.jpg',
+    short_hook: 'An iconic 17th-century stone Shikhara temple in Bhaktapur Durbar Square.',
+    history: 'Situated in the central area of Bhaktapur Durbar Square, the Vatsala Devi Temple is a striking 17th-century monument dedicated to a form of the goddess Durga. Constructed entirely of fine stone in the Shikhara architectural style, it stands out as an unusual landmark in a valley dominated by wooden pagodas. Built under the patronage of King Jitamitra Malla and completed under King Bhupatindra Malla, the temple reflects the profound influence of North Indian stone architecture on late medieval Newar builders.\n\nThe temple features intricate carvings of various deities, delicate stone pillars, and multiple spires surrounding the main dome. Over the centuries, it stood as a testament to the versatility of Bhaktapur\'s craftsmen, who excelled in stone masonry just as they did in wood and metalwork.',
+    folklore: 'The temple is most famous in folklore for housing the historic bronze bell known as the "bell of barking dogs." Installed by King Ranjit Malla in 1737 CE, legend says that when the bell was rung during daily rituals, its deep, resonant vibration would strike terror into the local canine population, causing all dogs in the square to howl and bark in distress.\n\nBeyond the dog legend, local lore states that the bell\'s chime possesses a sacred frequency that immediately dissolves negative energy and wards off evil forces from the palace gates. Devotees believe that a silent prayer made under the shadow of the Shikhara spire carries immense merit, invoking the fierce, protective grace of Vatsala Devi.',
+    culture_note: 'In the devastating April 2015 earthquake, the Vatsala Devi Temple collapsed completely into a heap of rubble, leaving only its stone foundation and the famous bronze bell intact. The collapse was a major cultural loss, but it has since been meticulously rebuilt stone-by-stone using traditional reconstruction techniques, serving as a prominent symbol of Bhaktapur\'s post-earthquake resilience and heritage recovery.',
+  },
+  {
+    id: 'bhaktapur-dattatreya-temple',
+    name: 'Dattatreya Temple',
+    category: 'temple',
+    lat: 27.6730, // Approximate coordinates
+    lng: 85.4279, // Approximate coordinates
+    radius_m: 40,
+    image_url: 'https://upload.wikimedia.org/wikipedia/commons/d/db/Dattatreya_Temple%2C_Dattatreya_Square%2C_Bhaktapur.jpg',
+    short_hook: 'One of the oldest temples in the valley, dedicated to the syncretic Hindu trinity.',
+    history: 'Located in Dattatreya Square (Tachapal Tole) in the eastern part of Bhaktapur, the Dattatreya Temple is a grand three-story pagoda temple. Built during the reign of King Yaksha Malla in 1427 CE and later renovated by King Vishva Malla, it is one of the oldest temples in the Kathmandu Valley. The temple is dedicated to Dattatreya, a rare deity representing the syncretic, combined form of the Hindu trinity: Brahma (the Creator), Vishnu (the Preserver), and Shiva (the Destroyer).\n\nArchitecturally, the temple serves as a classic representation of early Malla-period design, featuring thick brick walls, heavy timber columns, and remarkably detailed carvings. It survived major earthquakes with minor damages, preserving some of the oldest wood carvings in Nepal, including the famous peacock window located on the Pujari Math nearby.',
+    folklore: 'According to popular local legend, the entire massive three-story structure of the temple was carved from the timber of a single, colossal shorea robusta (sal) tree. The wood was said to be spiritually purified and gifted to the king by a wandering ascetic who possessed mystical powers. Historically, this single-tree claim is treated strictly as legend and folklore, as modern architectural analysis shows that timbers from multiple trees of different species were used in its construction.\n\nAnother legend says that Dattatreya himself visited Tachapal Tole in the guise of an ascetic. The local people treated him with such profound respect and hospitality that the deity blessed the soil, making it a sacred site where any temple built would stand for centuries as a place of ultimate peace and union.',
+    culture_note: 'The temple is a major pilgrimage site during the festival of Shivaratri and the month of Shrawan, attracting thousands of sadhus (holy men) and devotees from all over Nepal and India. It stands as a unique testament to the peaceful co-existence and blending of Shaiva, Vaishnava, and Buddhist traditions in Newar culture.',
+  },
+  {
+    id: 'bhaktapur-fasidega-temple',
+    name: 'Fasidega Temple',
+    category: 'temple',
+    lat: 27.67214,
+    lng: 85.42904,
+    radius_m: 35,
+    image_url: 'https://upload.wikimedia.org/wikipedia/commons/1/18/Fasi_Dega_Temple.JPG',
+    short_hook: 'A tall white Shiva temple sitting on a prominent multi-tiered stone plinth.',
+    history: 'Located in Bhaktapur Durbar Square, the Fasidega (or Silu Mahadev) Temple is dedicated to Lord Shiva. The temple was built during the late Malla period and stands out for its high stone foundation steps. The temple structure was entirely destroyed during the 2015 earthquake, leaving only the elaborate stone base, but it has since been rebuilt using traditional methods.',
+    folklore: 'The grand stone staircase is famous for its successive pairs of guardian figures: massive elephants at the bottom, followed by lions, and then bulls. Devotees believe climbing past these guardians brings spiritual purification before reaching the shrine of Mahadev.',
+    culture_note: 'It serves as a key landmark in Bhaktapur Durbar Square, showcasing the hybrid architecture styles and post-earthquake recovery of the Kathmandu Valley.',
+  },
+  {
+    id: 'bhaktapur-kedarnath-temple',
+    name: 'Kedarnath Temple',
+    category: 'temple',
+    lat: 27.67209,
+    lng: 85.42771,
+    radius_m: 30,
+    image_url: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Shiva_Kedarnath_Temple%2C_Durbar_Square_%285241407371%29.jpg',
+    short_hook: 'A unique terracotta Shikhara-style temple inside Bhaktapur Durbar Square.',
+    history: 'Dedicated to Lord Shiva, the Kedarnath Temple stands in Bhaktapur Durbar Square. Unlike the typical wooden pagoda-style temples of Nepal, it was constructed in the elegant stone/terracotta Shikhara style, showing North Indian architectural influences. It suffered severe damage in the 2015 earthquake but has been carefully restored.',
+    folklore: 'In Nepalese tradition, the temple is connected to the great Kedarnath pilgrimage of India. Legend says that building this local temple allowed the Malla kings and townspeople to receive the blessings of Kedar without undergoing the hazardous journey to the Himalayas.',
+    culture_note: 'It stands as a symbol of the diverse religious architectural heritage of Bhaktapur, representing the harmonious blending of regional styles in medieval Nepal.',
+  },
 ]

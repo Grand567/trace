@@ -31,6 +31,9 @@ export function renderInfoCard(poi: POI): void {
     card = document.createElement('div')
     card.id = 'info-card'
     card.innerHTML = `
+      <div class="poi-drag-handle" id="poi-drag-handle" aria-label="Expand or shrink card" role="button">
+        <span class="poi-drag-indicator"></span>
+      </div>
       <div class="poi-actions">
         <button type="button" class="poi-like" aria-pressed="false" aria-label="Add to favorites">♡</button>
         <button type="button" class="poi-close" aria-label="Close details">&times;</button>
@@ -44,9 +47,68 @@ export function renderInfoCard(poi: POI): void {
     const closeButton = card.querySelector('.poi-close')
     const likeButton = card.querySelector('.poi-like') as HTMLButtonElement | null
     const takeMeThereBtn = card.querySelector('#btn-take-me-there') as HTMLButtonElement | null
+    const handle = card.querySelector('.poi-drag-handle')
+
+    // Click/Tap toggle
+    handle?.addEventListener('click', () => {
+      card?.classList.toggle('is-fullscreen')
+    })
+
+    // Drag detection setup
+    let dragStartY = 0
+    let isDragging = false
+
+    // Touch events (Mobile)
+    handle?.addEventListener('touchstart', (e: TouchEvent) => {
+      dragStartY = e.touches[0].clientY
+      isDragging = true
+    }, { passive: true })
+
+    handle?.addEventListener('touchmove', (e: TouchEvent) => {
+      if (!isDragging) return
+      const currentY = e.touches[0].clientY
+      const deltaY = currentY - dragStartY
+
+      if (deltaY < -50 && !card?.classList.contains('is-fullscreen')) {
+        card?.classList.add('is-fullscreen')
+        isDragging = false
+      } else if (deltaY > 50 && card?.classList.contains('is-fullscreen')) {
+        card?.classList.remove('is-fullscreen')
+        isDragging = false
+      }
+    }, { passive: true })
+
+    handle?.addEventListener('touchend', () => {
+      isDragging = false
+    })
+
+    // Mouse events (Desktop)
+    handle?.addEventListener('mousedown', (e: MouseEvent) => {
+      dragStartY = e.clientY
+      isDragging = true
+    })
+
+    document.addEventListener('mousemove', (e: MouseEvent) => {
+      if (!isDragging) return
+      const currentY = e.clientY
+      const deltaY = currentY - dragStartY
+
+      if (deltaY < -50 && !card?.classList.contains('is-fullscreen')) {
+        card?.classList.add('is-fullscreen')
+        isDragging = false
+      } else if (deltaY > 50 && card?.classList.contains('is-fullscreen')) {
+        card?.classList.remove('is-fullscreen')
+        isDragging = false
+      }
+    })
+
+    document.addEventListener('mouseup', () => {
+      isDragging = false
+    })
 
     closeButton?.addEventListener('click', () => {
       card?.classList.remove('is-open')
+      card?.classList.remove('is-fullscreen')
       if (infoCardCloseCallback) {
         infoCardCloseCallback()
       }
@@ -77,6 +139,7 @@ export function renderInfoCard(poi: POI): void {
 
   if (isSwitchingPoi) {
     card.classList.remove('is-open')
+    card.classList.remove('is-fullscreen')
   }
 
   if (content) {
