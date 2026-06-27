@@ -33,19 +33,41 @@ export function renderInfoCard(poi: POI): void {
     content.innerHTML = `
       <h2>${poi.name}</h2>
       <p class="poi-hook">${poi.short_hook}</p>
-      <section class="poi-section">
-        <h3>History</h3>
-        <p>${poi.history}</p>
-      </section>
-      <section class="poi-section">
-        <h3>Folklore</h3>
-        <p>${poi.folklore}</p>
-      </section>
-      <section class="poi-section">
-        <h3>Today</h3>
-        <p>${poi.culture_note}</p>
-      </section>
+      
+      <div class="poi-tabs">
+        <button class="tab-button active" data-tab="history">History</button>
+        <button class="tab-button" data-tab="folklore">Folklore</button>
+        <button class="tab-button" data-tab="today">Today</button>
+      </div>
+
+      <div class="tab-panels">
+        <section class="tab-panel active" id="tab-history">
+          <p>${poi.history}</p>
+        </section>
+        <section class="tab-panel" id="tab-folklore">
+          <p>${poi.folklore}</p>
+        </section>
+        <section class="tab-panel" id="tab-today">
+          <p>${poi.culture_note}</p>
+        </section>
+      </div>
     `
+
+    const tabButtons = content.querySelectorAll('.tab-button')
+    const tabPanels = content.querySelectorAll('.tab-panel')
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const targetTab = button.getAttribute('data-tab')
+
+        tabButtons.forEach(btn => btn.classList.remove('active'))
+        tabPanels.forEach(panel => panel.classList.remove('active'))
+
+        button.classList.add('active')
+        const activePanel = content.querySelector(`#tab-${targetTab}`)
+        activePanel?.classList.add('active')
+      })
+    })
   }
 
   activePoiId = poi.id
