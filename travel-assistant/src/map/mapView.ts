@@ -3,6 +3,7 @@ import iconUrl from 'leaflet/dist/images/marker-icon.png'
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png'
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
 import type { POI } from '../shared/types'
+import { renderInfoCard } from '../poi/infoCard'
 
 // Kathmandu Durbar Square (matches offline tile download area)
 const MAP_CENTER = { lat: 27.7045, lng: 85.3076 }
@@ -46,6 +47,7 @@ export function initMap(): L.Map {
 
 export function onMarkerTapped(poi: POI): void {
   console.log('POI tapped:', poi)
+  renderInfoCard(poi)
 }
 
 function getCategoryColor(category: string): string {
