@@ -1,6 +1,18 @@
 import type { POI } from '../shared/types'
 
 let activePoiId: string | null = null
+const likedPoiIds = new Set<string>()
+
+function setLikeButtonState(button: HTMLButtonElement | null, isLiked: boolean): void {
+  if (!button) {
+    return
+  }
+
+  button.classList.toggle('is-liked', isLiked)
+  button.setAttribute('aria-pressed', String(isLiked))
+  button.setAttribute('aria-label', isLiked ? 'Remove from favorites' : 'Add to favorites')
+  button.textContent = isLiked ? '♥' : '♡'
+}
 
 export function renderInfoCard(poi: POI): void {
   let card = document.getElementById('info-card')
@@ -9,20 +21,40 @@ export function renderInfoCard(poi: POI): void {
     card = document.createElement('div')
     card.id = 'info-card'
     card.innerHTML = `
-      <button type="button" class="poi-close" aria-label="Close details">&times;</button>
+      <div class="poi-actions">
+        <button type="button" class="poi-like" aria-pressed="false" aria-label="Add to favorites">♡</button>
+        <button type="button" class="poi-close" aria-label="Close details">&times;</button>
+      </div>
       <div class="poi-content"></div>
     `
 
     const closeButton = card.querySelector('.poi-close')
+    const likeButton = card.querySelector('.poi-like') as HTMLButtonElement | null
 
     closeButton?.addEventListener('click', () => {
       card?.classList.remove('is-open')
+    })
+
+    likeButton?.addEventListener('click', () => {
+      if (!activePoiId) {
+        return
+      }
+
+      if (likedPoiIds.has(activePoiId)) {
+        likedPoiIds.delete(activePoiId)
+      } else {
+        likedPoiIds.add(activePoiId)
+      }
+
+      setLikeButtonState(likeButton, likedPoiIds.has(activePoiId))
+      card?.classList.toggle('is-liked', likedPoiIds.has(activePoiId))
     })
 
     document.body.appendChild(card)
   }
 
   const content = card.querySelector('.poi-content')
+  const likeButton = card.querySelector('.poi-like') as HTMLButtonElement | null
   const isSwitchingPoi = card.classList.contains('is-open') && activePoiId !== null && activePoiId !== poi.id
 
   if (isSwitchingPoi) {
@@ -75,6 +107,8 @@ export function renderInfoCard(poi: POI): void {
   }
 
   activePoiId = poi.id
+  setLikeButtonState(likeButton, likedPoiIds.has(poi.id))
+  card.classList.toggle('is-liked', likedPoiIds.has(poi.id))
 
   window.setTimeout(() => {
     card.classList.add('is-open')

@@ -101,22 +101,52 @@ body {
   pointer-events: auto;
 }
 
-#info-card .poi-close {
+#info-card .poi-actions {
   position: absolute;
   top: var(--space-2);
   right: var(--space-2);
+  display: flex;
+  gap: 0.4rem;
+  z-index: 2;
+}
+
+#info-card .poi-close,
+#info-card .poi-like {
   width: 2rem;
   height: 2rem;
   border: 0;
   border-radius: 999px;
   background: var(--surface-strong);
-  color: var(--accent-strong);
-  font-size: 1.25rem;
+  color: var(--text-body);
+  font-size: 1.1rem;
   line-height: 1;
   cursor: pointer;
   box-shadow: 0 8px 20px rgba(32, 23, 20, 0.12);
   backdrop-filter: blur(8px);
+  transition: transform 160ms ease, background-color 160ms ease, color 160ms ease;
   z-index: 2;
+}
+
+#info-card .poi-close {
+  color: var(--accent-strong);
+}
+
+#info-card .poi-like {
+  font-size: 1.05rem;
+}
+
+#info-card .poi-close:hover,
+#info-card .poi-like:hover {
+  transform: translateY(-1px);
+}
+
+#info-card .poi-like.is-liked {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+#info-card.is-liked .poi-category {
+  background: rgba(198, 90, 58, 0.18);
 }
 
 #info-card .poi-content {
@@ -273,6 +303,69 @@ body {
 
 .category-marker-icon.is-nearby {
   filter: drop-shadow(0 0 8px rgba(198, 90, 58, 0.5));
+}
+
+.user-location-marker {
+  background: none !important;
+  border: none !important;
+}
+
+.user-location-marker,
+.user-location-marker__pulse,
+.user-location-marker__ring,
+.user-location-marker__dot {
+  width: 24px;
+  height: 24px;
+}
+
+.user-location-marker {
+  position: relative;
+  display: block;
+}
+
+.user-location-marker__pulse,
+.user-location-marker__ring,
+.user-location-marker__dot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 999px;
+}
+
+.user-location-marker__pulse {
+  background: rgba(66, 133, 244, 0.18);
+  animation: userLocationPulse 1.8s ease-out infinite;
+}
+
+.user-location-marker__ring {
+  box-sizing: border-box;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: rgba(66, 133, 244, 0.2);
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+}
+
+.user-location-marker__dot {
+  width: 10px;
+  height: 10px;
+  left: 7px;
+  top: 7px;
+  background: #4285f4;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.95);
+}
+
+@keyframes userLocationPulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(1.65);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.65);
+    opacity: 0;
+  }
 }
 
 .leaflet-control-zoom {

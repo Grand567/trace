@@ -2,6 +2,7 @@ import L from 'leaflet'
 import iconUrl from 'leaflet/dist/images/marker-icon.png'
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png'
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
+import type { Position } from '../gps/location'
 import type { POI } from '../shared/types'
 import { renderInfoCard } from '../poi/infoCard'
 
@@ -13,6 +14,7 @@ const OFFLINE_MAX_ZOOM = 17
 
 const markersByPoiId = new Map<string, L.Marker>()
 const nearbyPoiIds = new Set<string>()
+let userLocationMarker: L.Marker | null = null
 
 const defaultIcon = L.icon({
   iconUrl,
@@ -92,6 +94,19 @@ function refreshNearbyMarkerStyles(): void {
   }
 }
 
+function createUserLocationIcon(): L.DivIcon {
+  return L.divIcon({
+    className: 'user-location-marker',
+    html: `
+      <span class="user-location-marker__pulse"></span>
+      <span class="user-location-marker__ring"></span>
+      <span class="user-location-marker__dot"></span>
+    `,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+  })
+}
+
 export function renderPOIMarkers(map: L.Map, pois: POI[]): void {
   for (const poi of pois) {
     const marker = L.marker([poi.lat, poi.lng], {
@@ -111,4 +126,27 @@ export function setNearbyPOIs(nearbyPOIs: POI[]): void {
   }
 
   refreshNearbyMarkerStyles()
+}
+
+export function updateUserLocationMarker(map: L.Map, position: Position): void {
+  if (!userLocationMarker) {
+    userLocationMarker = L.marker([position.lat, position.lng], {
+      icon: createUserLocationIcon(),
+      interactive: false,
+      keyboard: false,
+      zIndexOffset: 2000,
+    }).addTo(map)
+    return
+  }
+
+  userLocationMarker.setLatLng([position.lat, position.lng])
+}
+
+export function clearUserLocationMarker(): void {
+  if (!userLocationMarker) {
+    return
+  }
+
+  userLocationMarker.remove()
+  userLocationMarker = null
 }
