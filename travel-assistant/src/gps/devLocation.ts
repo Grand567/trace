@@ -1,7 +1,7 @@
 /** Near Kathmandu Durbar Square — close to hackathon POIs for testing. */
 export const DEV_FAKE_POSITION = {
-  lat: 27.7045,
-  lng: 85.3076,
+  lat: 27.70405,
+  lng: 85.30584,
 } as const
 
 /**
