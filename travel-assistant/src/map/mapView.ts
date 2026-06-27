@@ -6,6 +6,7 @@ import type { Position } from '../gps/location'
 import type { POI } from '../shared/types'
 import { isPoiLiked, subscribeFavoriteChanges } from '../poi/favorites'
 import { renderInfoCard } from '../poi/infoCard'
+import { haversineDistanceM } from '../gps/proximity'
 
 // Kathmandu Durbar Square (matches offline tile download area)
 const MAP_CENTER = { lat: 27.7045, lng: 85.3076 }
@@ -38,13 +39,9 @@ export function initMap(): L.Map {
   const map = L.map('map', {
     minZoom: OFFLINE_MIN_ZOOM,
     maxZoom: OFFLINE_MAX_ZOOM,
-    tap: false, // Prevents Leaflet's custom tap handler from interfering with native tap/pinch/pan gestures in Capacitor
-    bounceAtZoomLimits: false, // Ensures smoother pinch-zoom and pan on mobile
+    tap: false,
+    bounceAtZoomLimits: false,
   } as any).setView([MAP_CENTER.lat, MAP_CENTER.lng], DEFAULT_ZOOM)
-
-  // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  //   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  // }).addTo(map)
 
   L.tileLayer(`${import.meta.env.BASE_URL}tiles/{z}/{x}/{y}.png`, {
     minZoom: OFFLINE_MIN_ZOOM,
@@ -54,6 +51,29 @@ export function initMap(): L.Map {
   }).addTo(map)
 
   return map
+}
+
+/** Switch to online OSM tiles, called when user is outside the Kathmandu offline area */
+export function enableOnlineTiles(map: L.Map): void {
+  // Remove zoom constraints so we can zoom freely on live tiles
+  map.setMinZoom(2)
+  map.setMaxZoom(19)
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 19,
+  }).addTo(map)
+}
+
+/** Remove all POI markers from the map (used when switching to local dynamic POIs) */
+export function clearPOIMarkers(): void {
+  for (const [, marker] of markersByPoiId) {
+    marker.remove()
+  }
+  markersByPoiId.clear()
+  markerCategoryByPoiId.clear()
+  nearbyPoiIds.clear()
 }
 
 export function onMarkerTapped(poi: POI): void {
@@ -162,4 +182,72 @@ export function clearUserLocationMarker(): void {
 
   userLocationMarker.remove()
   userLocationMarker = null
+}
+
+let activeRouteLine: L.Polyline | null = null
+
+export function drawRouteLine(map: L.Map, start: Position, end: Position): void {
+  clearRouteLine()
+
+  const startLat = start.lat
+  const startLng = start.lng
+  const endLat = end.lat
+  const endLng = end.lng
+
+  // Midpoint
+  const midLat = (startLat + endLat) / 2
+  const midLng = (startLng + endLng) / 2
+
+  // Vector from start to end
+  const dLat = endLat - startLat
+  const dLng = endLng - startLng
+
+  // Perpendicular vector (-dLng, dLat)
+  const pLat = -dLng
+  const pLng = dLat
+
+  // Control point offset - 0.15 for a natural gentle bend as requested
+  const offsetFactor = 0.15
+  const ctrlLat = midLat + pLat * offsetFactor
+  const ctrlLng = midLng + pLng * offsetFactor
+
+  // Sample points on quadratic Bezier curve
+  const segments = 30
+  const points: [number, number][] = []
+  
+  for (let i = 0; i <= segments; i++) {
+    const t = i / segments
+    const lat = (1 - t) * (1 - t) * startLat + 2 * (1 - t) * t * ctrlLat + t * t * endLat
+    const lng = (1 - t) * (1 - t) * startLng + 2 * (1 - t) * t * ctrlLng + t * t * endLng
+    points.push([lat, lng])
+  }
+
+  // Create the polyline with dashed style and theme color
+  activeRouteLine = L.polyline(points, {
+    color: '#c65a3a',
+    weight: 4,
+    opacity: 0.8,
+    dashArray: '6, 8',
+    lineCap: 'round',
+  }).addTo(map)
+
+  // Calculate straight-line distance
+  const distanceM = haversineDistanceM(startLat, startLng, endLat, endLng)
+  const roundedDistance = Math.round(distanceM)
+
+  // Bind a styled floating tooltip at the midpoint of the curve (index 15)
+  const tooltipPoint = points[15]
+  
+  activeRouteLine.bindTooltip(`${roundedDistance}m away`, {
+    permanent: true,
+    direction: 'center',
+    className: 'route-distance-tooltip',
+  }).openTooltip(L.latLng(tooltipPoint[0], tooltipPoint[1]))
+}
+
+export function clearRouteLine(): void {
+  if (activeRouteLine) {
+    activeRouteLine.remove()
+    activeRouteLine = null
+  }
 }

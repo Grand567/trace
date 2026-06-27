@@ -73,6 +73,9 @@ export async function watchUserLocation(
     },
     (position, err) => {
       if (err || !position) {
+        // GPS hard-failed — feed last known fake position so app stays usable
+        console.warn('GPS error or no position, using fallback:', err)
+        callback({ ...DEV_FAKE_POSITION })
         return
       }
 

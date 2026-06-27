@@ -2,6 +2,16 @@ import type { POI } from '../shared/types'
 import { isPoiLiked, togglePoiLiked } from './favorites'
 
 let activePoiId: string | null = null
+let infoCardCloseCallback: (() => void) | null = null
+let takeMeThereCallback: (() => void) | null = null
+
+export function setOnInfoCardClose(callback: () => void): void {
+  infoCardCloseCallback = callback
+}
+
+export function setOnTakeMeThere(callback: () => void): void {
+  takeMeThereCallback = callback
+}
 
 function setLikeButtonState(button: HTMLButtonElement | null, isLiked: boolean): void {
   if (!button) {
@@ -26,13 +36,26 @@ export function renderInfoCard(poi: POI): void {
         <button type="button" class="poi-close" aria-label="Close details">&times;</button>
       </div>
       <div class="poi-content"></div>
+      <div class="poi-route-action">
+        <button type="button" class="btn-take-me-there" id="btn-take-me-there">🗺 Take Me There</button>
+      </div>
     `
 
     const closeButton = card.querySelector('.poi-close')
     const likeButton = card.querySelector('.poi-like') as HTMLButtonElement | null
+    const takeMeThereBtn = card.querySelector('#btn-take-me-there') as HTMLButtonElement | null
 
     closeButton?.addEventListener('click', () => {
       card?.classList.remove('is-open')
+      if (infoCardCloseCallback) {
+        infoCardCloseCallback()
+      }
+    })
+
+    takeMeThereBtn?.addEventListener('click', () => {
+      if (takeMeThereCallback) {
+        takeMeThereCallback()
+      }
     })
 
     likeButton?.addEventListener('click', () => {
