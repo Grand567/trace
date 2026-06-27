@@ -36,8 +36,29 @@ body {
   margin-bottom: 0.25rem;
 }
 
-#info-card p {
+#info-card .poi-hook {
   font-family: system-ui, sans-serif;
   font-size: 0.9rem;
   color: #444;
+  margin-bottom: 0.75rem;
+}
+
+#info-card .poi-section + .poi-section {
+  margin-top: 0.75rem;
+}
+
+#info-card .poi-section h3 {
+  font-family: system-ui, sans-serif;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.2rem;
+  color: #222;
+}
+
+#info-card .poi-section p {
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.45;
 }
