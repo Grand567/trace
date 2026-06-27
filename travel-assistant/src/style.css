@@ -18,6 +18,36 @@ body {
   height: 100%;
 }
 
+#nearby-banner {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 0.75rem);
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  z-index: 1100;
+  max-width: min(92vw, 24rem);
+  padding: 0.7rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.9);
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.28);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+#nearby-banner.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+#nearby-banner strong {
+  font-weight: 700;
+}
+
 #info-card {
   position: fixed;
   bottom: 1rem;
@@ -208,5 +238,9 @@ body {
 .category-marker-icon {
   background: none !important;
   border: none !important;
+}
+
+.category-marker-icon.is-nearby {
+  filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.45));
 }
 
