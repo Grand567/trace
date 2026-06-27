@@ -4,6 +4,7 @@ import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png'
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
 import type { Position } from '../gps/location'
 import type { POI } from '../shared/types'
+import { isPoiLiked, subscribeFavoriteChanges } from '../poi/favorites'
 import { renderInfoCard } from '../poi/infoCard'
 
 // Kathmandu Durbar Square (matches offline tile download area)
@@ -27,6 +28,10 @@ const defaultIcon = L.icon({
 })
 
 L.Marker.prototype.options.icon = defaultIcon
+
+subscribeFavoriteChanges(() => {
+  refreshPoiMarkerStyles()
+})
 
 export function initMap(): L.Map {
   const map = L.map('map', {
@@ -64,16 +69,23 @@ function getCategoryColor(category: string): string {
   return '#388e3c'                                    // Green default
 }
 
-function createPoiIcon(category: string, isNearby: boolean): L.DivIcon {
+function createPoiIcon(category: string, isNearby: boolean, isLiked: boolean): L.DivIcon {
   const color = getCategoryColor(category)
   const nearbyRing = 'rgba(198, 90, 58, 0.85)'
+  const fill = isLiked ? color : '#fffaf6'
+  const stroke = isLiked ? '#ffffff' : color
+  const strokeWidth = isLiked ? '1.5' : '2'
 
   return L.divIcon({
-    className: isNearby ? 'category-marker-icon is-nearby' : 'category-marker-icon',
+    className: [
+      'category-marker-icon',
+      isNearby ? 'is-nearby' : '',
+      isLiked ? 'is-liked' : '',
+    ].join(' ').trim(),
     html: `
       <svg width="28" height="41" viewBox="0 0 28 41" style="display: block; overflow: visible;">
-        <path d="M14 0C6.27 0 0 6.27 0 14c0 10.5 14 27 14 27s14-16.5 14-27c0-7.73-6.27-14-14-14z" fill="${color}" stroke="#ffffff" stroke-width="1.5" ${isNearby ? `filter="drop-shadow(0 0 8px ${nearbyRing})"` : ''}/>
-        <circle cx="14" cy="14" r="5.5" fill="#ffffff"/>
+        <path d="M14 0C6.27 0 0 6.27 0 14c0 10.5 14 27 14 27s14-16.5 14-27c0-7.73-6.27-14-14-14z" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" ${isNearby ? `filter="drop-shadow(0 0 8px ${nearbyRing})"` : ''}/>
+        <circle cx="14" cy="14" r="5.5" fill="${isLiked ? '#ffffff' : color}" opacity="${isLiked ? '1' : '0.28'}"/>
         ${isNearby ? '<circle cx="14" cy="14" r="10.5" fill="none" stroke="#c65a3a" stroke-width="2" opacity="0.95"/>' : ''}
       </svg>
     `,
@@ -88,9 +100,22 @@ function refreshNearbyMarkerStyles(): void {
     const poi = nearbyPoiIds.has(poiId)
     const markerPoi = marker.options as L.MarkerOptions & { poiCategory?: string }
     const category = markerPoi.poiCategory ?? ''
+    const isLiked = isPoiLiked(poiId)
 
-    marker.setIcon(createPoiIcon(category, poi))
+    marker.setIcon(createPoiIcon(category, poi, isLiked))
     marker.setZIndexOffset(poi ? 1000 : 0)
+  }
+}
+
+function refreshPoiMarkerStyles(): void {
+  for (const [poiId, marker] of markersByPoiId) {
+    const markerPoi = marker.options as L.MarkerOptions & { poiCategory?: string }
+    const category = markerPoi.poiCategory ?? ''
+    const isNearby = nearbyPoiIds.has(poiId)
+    const isLiked = isPoiLiked(poiId)
+
+    marker.setIcon(createPoiIcon(category, isNearby, isLiked))
+    marker.setZIndexOffset(isNearby ? 1000 : 0)
   }
 }
 
@@ -110,7 +135,7 @@ function createUserLocationIcon(): L.DivIcon {
 export function renderPOIMarkers(map: L.Map, pois: POI[]): void {
   for (const poi of pois) {
     const marker = L.marker([poi.lat, poi.lng], {
-      icon: createPoiIcon(poi.category, nearbyPoiIds.has(poi.id)),
+      icon: createPoiIcon(poi.category, nearbyPoiIds.has(poi.id), isPoiLiked(poi.id)),
     }).addTo(map)
     marker.options.poiCategory = poi.category
     markersByPoiId.set(poi.id, marker)
@@ -125,7 +150,7 @@ export function setNearbyPOIs(nearbyPOIs: POI[]): void {
     nearbyPoiIds.add(poi.id)
   }
 
-  refreshNearbyMarkerStyles()
+  refreshPoiMarkerStyles()
 }
 
 export function updateUserLocationMarker(map: L.Map, position: Position): void {
