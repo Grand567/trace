@@ -64,14 +64,15 @@ function getCategoryColor(category: string): string {
 
 function createPoiIcon(category: string, isNearby: boolean): L.DivIcon {
   const color = getCategoryColor(category)
+  const nearbyRing = 'rgba(198, 90, 58, 0.85)'
 
   return L.divIcon({
     className: isNearby ? 'category-marker-icon is-nearby' : 'category-marker-icon',
     html: `
       <svg width="28" height="41" viewBox="0 0 28 41" style="display: block; overflow: visible;">
-        <path d="M14 0C6.27 0 0 6.27 0 14c0 10.5 14 27 14 27s14-16.5 14-27c0-7.73-6.27-14-14-14z" fill="${color}" stroke="#ffffff" stroke-width="1.5" ${isNearby ? 'filter="drop-shadow(0 0 8px rgba(59, 130, 246, 0.55))"' : ''}/>
+        <path d="M14 0C6.27 0 0 6.27 0 14c0 10.5 14 27 14 27s14-16.5 14-27c0-7.73-6.27-14-14-14z" fill="${color}" stroke="#ffffff" stroke-width="1.5" ${isNearby ? `filter="drop-shadow(0 0 8px ${nearbyRing})"` : ''}/>
         <circle cx="14" cy="14" r="5.5" fill="#ffffff"/>
-        ${isNearby ? '<circle cx="14" cy="14" r="10.5" fill="none" stroke="#60a5fa" stroke-width="2" opacity="0.9"/>' : ''}
+        ${isNearby ? '<circle cx="14" cy="14" r="10.5" fill="none" stroke="#c65a3a" stroke-width="2" opacity="0.95"/>' : ''}
       </svg>
     `,
     iconSize: [28, 41],
