@@ -132,13 +132,10 @@ function isOutsideKathmandu(lat: number, lng: number): boolean {
 const controlPanel = document.createElement('div')
 controlPanel.id = 'poi-control-panel'
 controlPanel.innerHTML = `
-  <div class="panel-header">
-    <span class="panel-title">Proximity Alerts</span>
-    <label class="switch">
-      <input type="checkbox" id="alerts-toggle" ${proximityAlertsEnabled ? 'checked' : ''}>
-      <span class="slider"></span>
-    </label>
-  </div>
+  <label class="switch" title="Proximity Alerts">
+    <input type="checkbox" id="alerts-toggle" ${proximityAlertsEnabled ? 'checked' : ''}>
+    <span class="slider"></span>
+  </label>
 `
 document.body.appendChild(controlPanel)
 
