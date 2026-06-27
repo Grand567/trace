@@ -21,7 +21,9 @@ import { renderInfoCard, setOnInfoCardClose, setOnTakeMeThere } from './poi/info
 import type { POI } from './shared/types'
 
 // ── Map ──────────────────────────────────────────────────────────────────────
-const map = initMap()
+const map = initMap((poi) => {
+  selectedPoi = poi
+})
 
 // ── State ────────────────────────────────────────────────────────────────────
 const KATHMANDU_CENTER = { lat: 27.7045, lng: 85.3076 }
@@ -36,6 +38,7 @@ let hasCenteredOnUser = false
 let proximityAlertsEnabled = localStorage.getItem('proximityAlertsEnabled') !== 'false'
 let lastUserPosition: Position | null = null
 let selectedPoi: POI | null = null
+let lastGpsError: string | null = null
 
 renderPOIMarkers(map, activePois)
 
@@ -45,6 +48,11 @@ nearbyBanner.id = 'nearby-banner'
 document.body.appendChild(nearbyBanner)
 
 function updateNearbyBanner(nearbyPois: POI[]): void {
+  if (lastGpsError) {
+    nearbyBanner.innerHTML = `<strong style="color: #ff5252;">GPS Error:</strong> ${lastGpsError}`
+    nearbyBanner.classList.add('is-visible')
+    return
+  }
   if (!proximityAlertsEnabled || nearbyPois.length === 0) {
     nearbyBanner.textContent = ''
     nearbyBanner.classList.remove('is-visible')
@@ -269,7 +277,16 @@ async function startLocationTracking(): Promise<void> {
 
   isTrackingLocation = true
   try {
-    stopWatchingLocation = await watchUserLocation((position) => {
+    stopWatchingLocation = await watchUserLocation((position, error) => {
+      if (error || !position) {
+        console.error('Location tracking error:', error)
+        clearUserLocationMarker()
+        lastGpsError = error?.message || 'Failed to get location'
+        updateNearbyBanner([])
+        return
+      }
+
+      lastGpsError = null
       lastUserPosition = position
 
       if (!hasCenteredOnUser) {
