@@ -61,6 +61,16 @@ body {
   padding-right: 2.25rem;
 }
 
+#info-card .poi-image {
+  display: block;
+  width: calc(100% + 2rem);
+  margin: -1rem -1rem 0.85rem;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 16px 16px 0 0;
+  background: #eaeaea;
+}
+
 #info-card h2 {
   font-family: system-ui, sans-serif;
   font-size: 1.1rem;
