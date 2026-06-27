@@ -39,13 +39,9 @@ export function initMap(): L.Map {
   const map = L.map('map', {
     minZoom: OFFLINE_MIN_ZOOM,
     maxZoom: OFFLINE_MAX_ZOOM,
-    tap: false, // Prevents Leaflet's custom tap handler from interfering with native tap/pinch/pan gestures in Capacitor
-    bounceAtZoomLimits: false, // Ensures smoother pinch-zoom and pan on mobile
+    tap: false,
+    bounceAtZoomLimits: false,
   } as any).setView([MAP_CENTER.lat, MAP_CENTER.lng], DEFAULT_ZOOM)
-
-  // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  //   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  // }).addTo(map)
 
   L.tileLayer(`${import.meta.env.BASE_URL}tiles/{z}/{x}/{y}.png`, {
     minZoom: OFFLINE_MIN_ZOOM,
@@ -55,6 +51,29 @@ export function initMap(): L.Map {
   }).addTo(map)
 
   return map
+}
+
+/** Switch to online OSM tiles, called when user is outside the Kathmandu offline area */
+export function enableOnlineTiles(map: L.Map): void {
+  // Remove zoom constraints so we can zoom freely on live tiles
+  map.setMinZoom(2)
+  map.setMaxZoom(19)
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 19,
+  }).addTo(map)
+}
+
+/** Remove all POI markers from the map (used when switching to local dynamic POIs) */
+export function clearPOIMarkers(): void {
+  for (const [, marker] of markersByPoiId) {
+    marker.remove()
+  }
+  markersByPoiId.clear()
+  markerCategoryByPoiId.clear()
+  nearbyPoiIds.clear()
 }
 
 export function onMarkerTapped(poi: POI): void {
