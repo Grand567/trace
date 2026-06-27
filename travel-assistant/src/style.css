@@ -574,3 +574,39 @@ body {
   opacity: 0.35;
 }
 
+.poi-list-item-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.poi-list-item-distance {
+  font-size: 0.74rem;
+  color: var(--text-body);
+  opacity: 0.75;
+  margin-top: 1px;
+}
+
+/* Route Distance Tooltip styling overrides */
+.leaflet-tooltip.route-distance-tooltip {
+  background: var(--surface) !important;
+  border: 1px solid var(--border-soft) !important;
+  color: var(--accent-strong) !important;
+  font-family: var(--body-font) !important;
+  font-weight: 700 !important;
+  font-size: 0.78rem !important;
+  box-shadow: 0 4px 12px rgba(32, 23, 20, 0.12) !important;
+  border-radius: 8px !important;
+  padding: 3px 8px !important;
+  white-space: nowrap !important;
+  border-color: var(--border-soft) !important;
+}
+
+/* Tooltip caret override */
+.leaflet-tooltip-left.route-distance-tooltip::before,
+.leaflet-tooltip-right.route-distance-tooltip::before,
+.leaflet-tooltip-top.route-distance-tooltip::before,
+.leaflet-tooltip-bottom.route-distance-tooltip::before {
+  display: none !important;
+}
+

@@ -1,12 +1,12 @@
 import 'leaflet/dist/leaflet.css'
 import './style.css'
-import { initMap, renderPOIMarkers, setNearbyPOIs, updateUserLocationMarker, clearUserLocationMarker, getCategoryColor } from './map/mapView'
+import { initMap, renderPOIMarkers, setNearbyPOIs, updateUserLocationMarker, clearUserLocationMarker, getCategoryColor, drawRouteLine, clearRouteLine } from './map/mapView'
 import { pois } from './poi/poiData'
 import { watchUserLocation } from './gps/location'
 import type { Position } from './gps/location'
-import { getNearbyPOIs } from './gps/proximity'
+import { getNearbyPOIs, haversineDistanceM } from './gps/proximity'
 import { isPoiLiked, subscribeFavoriteChanges } from './poi/favorites'
-import { renderInfoCard } from './poi/infoCard'
+import { renderInfoCard, setOnInfoCardClose } from './poi/infoCard'
 
 const map = initMap()
 
@@ -54,6 +54,10 @@ async function startLocationTracking(): Promise<void> {
 			const nearbyPois = getNearbyPOIs(position.lat, position.lng, pois)
 			setNearbyPOIs(nearbyPois)
 			updateNearbyBanner(nearbyPois)
+
+			if (!proximityAlertsEnabled) {
+				renderPoiList()
+			}
 
 			console.log('User location updated:', position)
 			console.log(
@@ -136,11 +140,21 @@ function renderPoiList(): void {
   listContainer.innerHTML = filteredPois.map(poi => {
     const isLiked = isPoiLiked(poi.id)
     const color = getCategoryColor(poi.category)
+    let distanceStr = ''
+    
+    if (lastUserPosition) {
+      const dist = haversineDistanceM(lastUserPosition.lat, lastUserPosition.lng, poi.lat, poi.lng)
+      distanceStr = `${Math.round(dist)}m away`
+    }
+    
     return `
       <div class="poi-list-item" data-poi-id="${poi.id}">
         <div class="poi-list-item-left">
           <span class="poi-list-item-dot" style="background-color: ${color};"></span>
-          <span class="poi-list-item-name">${poi.name}</span>
+          <div class="poi-list-item-meta">
+            <span class="poi-list-item-name">${poi.name}</span>
+            ${distanceStr ? `<span class="poi-list-item-distance">${distanceStr}</span>` : ''}
+          </div>
         </div>
         <span class="poi-list-item-heart ${isLiked ? '' : 'is-unliked'}">${isLiked ? '♥' : '♡'}</span>
       </div>
@@ -156,6 +170,9 @@ function renderPoiList(): void {
       if (poi) {
         renderInfoCard(poi)
         map.flyTo([poi.lat, poi.lng], 17)
+        if (lastUserPosition) {
+          drawRouteLine(map, lastUserPosition, poi)
+        }
       }
     })
   })
@@ -167,6 +184,7 @@ alertsToggle.addEventListener('change', () => {
 
   if (proximityAlertsEnabled) {
     listContainer.classList.add('hidden')
+    clearRouteLine()
     if (lastUserPosition) {
       const nearbyPois = getNearbyPOIs(lastUserPosition.lat, lastUserPosition.lng, pois)
       updateNearbyBanner(nearbyPois)
@@ -183,6 +201,11 @@ subscribeFavoriteChanges(() => {
   if (!proximityAlertsEnabled) {
     renderPoiList()
   }
+})
+
+// Register close callback for infoCard to clear the route line
+setOnInfoCardClose(() => {
+  clearRouteLine()
 })
 
 // Initial list render if alerts are off by default

@@ -2,6 +2,11 @@ import type { POI } from '../shared/types'
 import { isPoiLiked, togglePoiLiked } from './favorites'
 
 let activePoiId: string | null = null
+let infoCardCloseCallback: (() => void) | null = null
+
+export function setOnInfoCardClose(callback: () => void): void {
+  infoCardCloseCallback = callback
+}
 
 function setLikeButtonState(button: HTMLButtonElement | null, isLiked: boolean): void {
   if (!button) {
@@ -33,6 +38,9 @@ export function renderInfoCard(poi: POI): void {
 
     closeButton?.addEventListener('click', () => {
       card?.classList.remove('is-open')
+      if (infoCardCloseCallback) {
+        infoCardCloseCallback()
+      }
     })
 
     likeButton?.addEventListener('click', () => {
