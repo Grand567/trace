@@ -35,7 +35,12 @@ subscribeFavoriteChanges(() => {
   refreshPoiMarkerStyles()
 })
 
-export function initMap(): L.Map {
+let markerTappedCallback: ((poi: POI) => void) | null = null
+
+export function initMap(onMarkerTappedCb?: (poi: POI) => void): L.Map {
+  if (onMarkerTappedCb) {
+    markerTappedCallback = onMarkerTappedCb
+  }
   const map = L.map('map', {
     minZoom: OFFLINE_MIN_ZOOM,
     maxZoom: OFFLINE_MAX_ZOOM,
@@ -79,6 +84,9 @@ export function clearPOIMarkers(): void {
 export function onMarkerTapped(poi: POI): void {
   console.log('POI tapped:', poi)
   renderInfoCard(poi)
+  if (markerTappedCallback) {
+    markerTappedCallback(poi)
+  }
 }
 
 export function getCategoryColor(category: string): string {

@@ -10,5 +10,5 @@ export const DEV_FAKE_POSITION = {
  * - built with VITE_USE_FAKE_GPS=true (for debug APK testing)
  */
 export function isFakeGpsEnabled(): boolean {
-  return import.meta.env.DEV || import.meta.env.VITE_USE_FAKE_GPS === 'true'
+  return import.meta.env.VITE_USE_FAKE_GPS === 'true'
 }

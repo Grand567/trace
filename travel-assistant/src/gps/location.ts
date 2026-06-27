@@ -1,5 +1,5 @@
 import { Geolocation } from '@capacitor/geolocation'
-import { DEV_FAKE_POSITION, isFakeGpsEnabled } from './devLocation'
+import { DEV_FAKE_POSITION } from './devLocation'
 
 export interface Position {
   lat: number
@@ -27,11 +27,14 @@ export async function ensureLocationPermission(): Promise<void> {
   }
 }
 
-export async function getCurrentPosition(): Promise<Position> {
-  if (isFakeGpsEnabled()) {
-    return { ...DEV_FAKE_POSITION }
-  }
+/**
+ * Returns the hardcoded development fake position explicitly when called for testing.
+ */
+export function getFakePosition(): Position {
+  return { ...DEV_FAKE_POSITION }
+}
 
+export async function getCurrentPosition(): Promise<Position> {
   await ensureLocationPermission()
 
   const { coords } = await Geolocation.getCurrentPosition({
@@ -57,13 +60,8 @@ function toPosition(coords: { latitude: number; longitude: number }): Position {
  * Returns a stop function — call it when you no longer need updates.
  */
 export async function watchUserLocation(
-  callback: (position: Position) => void,
+  callback: (position: Position | null, error?: any) => void,
 ): Promise<() => Promise<void>> {
-  if (isFakeGpsEnabled()) {
-    callback({ ...DEV_FAKE_POSITION })
-    return async () => {}
-  }
-
   await ensureLocationPermission()
 
   const watchId = await Geolocation.watchPosition(
@@ -73,13 +71,12 @@ export async function watchUserLocation(
     },
     (position, err) => {
       if (err || !position) {
-        // GPS hard-failed — feed last known fake position so app stays usable
-        console.warn('GPS error or no position, using fallback:', err)
-        callback({ ...DEV_FAKE_POSITION })
+        console.warn('GPS error or no position:', err)
+        callback(null, err || new Error('No position received'))
         return
       }
 
-      callback(toPosition(position.coords))
+      callback(toPosition(position.coords), null)
     },
   )
 
