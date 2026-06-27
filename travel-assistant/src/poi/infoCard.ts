@@ -186,32 +186,51 @@ export function renderInfoCard(poi: POI): void {
         <p class="poi-hook">${poi.short_hook}</p>
       </div>
 
-      <div class="poi-tabs">
-        <div class="tab-item active" data-tab="history">
-          <button class="tab-button active" data-tab="history">History</button>
-          <button class="tab-tts" data-tab="history" aria-label="Listen to History" title="Listen to History">${SPEAKER_SVG}</button>
-        </div>
-        <div class="tab-item" data-tab="folklore">
-          <button class="tab-button" data-tab="folklore">Folklore</button>
-          <button class="tab-tts" data-tab="folklore" aria-label="Listen to Folklore" title="Listen to Folklore">${SPEAKER_SVG}</button>
-        </div>
-        <div class="tab-item" data-tab="today">
-          <button class="tab-button" data-tab="today">Today</button>
-          <button class="tab-tts" data-tab="today" aria-label="Listen to Today" title="Listen to Today">${SPEAKER_SVG}</button>
-        </div>
-      </div>
+      ${(() => {
+        const hasHistory = !!poi.history?.trim()
+        const hasFolklore = !!poi.folklore?.trim()
+        const hasToday = !!poi.culture_note?.trim()
 
-      <div class="tab-panels">
-        <section class="tab-panel active" id="tab-history">
-          <p>${poi.history}</p>
-        </section>
-        <section class="tab-panel" id="tab-folklore">
-          <p>${poi.folklore}</p>
-        </section>
-        <section class="tab-panel" id="tab-today">
-          <p>${poi.culture_note}</p>
-        </section>
-      </div>
+        const tabs = []
+        if (hasHistory) tabs.push('history')
+        if (hasFolklore) tabs.push('folklore')
+        if (hasToday) tabs.push('today')
+
+        if (tabs.length === 0) {
+          return `<div class="poi-no-info">No detailed info for this spot yet.</div>`
+        }
+
+        const tabsHtml = `
+          <div class="poi-tabs">
+            ${tabs.map((tab, idx) => {
+              const activeClass = idx === 0 ? 'active' : ''
+              const label = tab === 'today' ? 'Today' : tab.charAt(0).toUpperCase() + tab.slice(1)
+              return `
+                <div class="tab-item ${activeClass}" data-tab="${tab}">
+                  <button class="tab-button ${activeClass}" data-tab="${tab}">${label}</button>
+                  <button class="tab-tts" data-tab="${tab}" aria-label="Listen to ${label}" title="Listen to ${label}">${SPEAKER_SVG}</button>
+                </div>
+              `
+            }).join('')}
+          </div>
+        `
+
+        const panelsHtml = `
+          <div class="tab-panels">
+            ${tabs.map((tab, idx) => {
+              const activeClass = idx === 0 ? 'active' : ''
+              const textVal = tab === 'history' ? poi.history : (tab === 'folklore' ? poi.folklore : poi.culture_note)
+              return `
+                <section class="tab-panel ${activeClass}" id="tab-${tab}">
+                  <p>${textVal}</p>
+                </section>
+              `
+            }).join('')}
+          </div>
+        `
+
+        return tabsHtml + panelsHtml
+      })()}
     `
 
     const tabButtons = content.querySelectorAll('.tab-button')
